@@ -1,7 +1,7 @@
 # SecureCare Frontend
 
-React, TypeScript, Vite, Tailwind CSS and the SecureCare authentication and Phase 6
-authorisation interface.
+React, TypeScript, Vite, Tailwind CSS and the SecureCare authentication, authorisation
+and Phase 7 childcare interface.
 
 ## Requirements
 
@@ -28,14 +28,14 @@ npm test
 npm run build
 ```
 
-Phase 6 adds server-derived access state, protected route handling,
-permission-aware navigation, current-access details, role-assignment controls,
-limited security metadata and a child-access proof form. The backend remains the
-authorisation boundary; hiding a page or control is only a usability measure.
-Permissions are refreshed from the API and session tokens are never placed in
-browser storage.
+Phase 7 adds server-scoped centre workspaces, rooms, reduced child lists, child details,
+parent relationships and current-room assignment controls. Managers receive only the
+controls permitted for their centre; Educators and Parents receive read-only views.
+The backend remains the authorisation boundary, and hiding a control is only a
+usability measure. Permissions are refreshed from the API, and session tokens and
+child data are never placed in browser storage.
 
-The childcare, pickup, incident, notification and payment pages remain Phase 2
-placeholders. The open React Router advisory and its temporary mitigation are
-recorded in
+Pickup, incident, attendance, medication, notification, payment, upload and dashboard
+features remain deferred. The open React Router advisory and its temporary mitigation
+are recorded in
 [`docs/security/dependency-risk-register.md`](docs/security/dependency-risk-register.md).
