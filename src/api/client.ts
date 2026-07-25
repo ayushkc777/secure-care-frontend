@@ -26,6 +26,21 @@ export async function postWithCsrf<T>(
   return response.data;
 }
 
+export async function mutateWithCsrf<T>(
+  method: "post" | "patch" | "delete",
+  path: string,
+  body: Record<string, unknown> = {},
+): Promise<T> {
+  const { data } = await apiClient.get<CsrfResponse>("/api/v1/auth/csrf-token");
+  const response = await apiClient.request<T>({
+    method,
+    url: path,
+    data: body,
+    headers: { "X-CSRF-Token": data.csrfToken },
+  });
+  return response.data;
+}
+
 export function safeApiMessage(error: unknown): string {
   if (axios.isAxiosError(error)) {
     if (error.response?.status === 429) {
@@ -33,6 +48,9 @@ export function safeApiMessage(error: unknown): string {
     }
     if (error.response?.status === 403) {
       return "This action needs a fully verified session.";
+    }
+    if (error.response?.status === 404) {
+      return "The requested item is unavailable or you do not have access to it.";
     }
   }
   return "The request could not be completed. Check the details and try again.";

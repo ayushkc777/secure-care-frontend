@@ -8,9 +8,11 @@ import { AuthCard } from "../components/auth/AuthCard";
 import { ErrorSummary, FieldError } from "../components/auth/FormFeedback";
 import { useAuthFlow } from "../features/auth/useAuthFlow";
 import { totpFormSchema, type TotpForm } from "../features/auth/auth.schemas";
+import { useAccess } from "../features/access/useAccess";
 
 export function MfaVerifyPage() {
   const navigate = useNavigate();
+  const { refresh } = useAccess();
   const { challengeExpiresAt, challengeToken, clearChallenge } = useAuthFlow();
   const [requestError, setRequestError] = useState<string | null>(null);
   const {
@@ -26,6 +28,7 @@ export function MfaVerifyPage() {
     try {
       await postWithCsrf("/api/v1/auth/mfa/verify", { challengeToken, code });
       clearChallenge();
+      await refresh();
       void navigate("/session");
     } catch (error) {
       setRequestError(safeApiMessage(error));

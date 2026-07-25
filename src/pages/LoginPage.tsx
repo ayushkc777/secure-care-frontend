@@ -9,9 +9,11 @@ import { ErrorSummary, FieldError } from "../components/auth/FormFeedback";
 import { useAuthFlow } from "../features/auth/useAuthFlow";
 import { loginFormSchema, type LoginForm } from "../features/auth/auth.schemas";
 import type { LoginResponse } from "../features/auth/auth.types";
+import { useAccess } from "../features/access/useAccess";
 
 export function LoginPage() {
   const navigate = useNavigate();
+  const { refresh } = useAccess();
   const { clearRecoveryCodes, clearSetup, setChallenge } = useAuthFlow();
   const [requestError, setRequestError] = useState<string | null>(null);
   const {
@@ -31,6 +33,7 @@ export function LoginPage() {
         void navigate("/mfa/verify");
         return;
       }
+      await refresh();
       void navigate("/mfa/required");
     } catch (error) {
       setRequestError(safeApiMessage(error));

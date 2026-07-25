@@ -1,21 +1,29 @@
 import { NavLink } from "react-router-dom";
 
-const navigationItems = [
-  { label: "Home", to: "/" },
-  { label: "Login", to: "/login" },
-  { label: "Register", to: "/register" },
-  { label: "Session", to: "/session" },
-  { label: "Dashboard", to: "/dashboard" },
-  { label: "Profile", to: "/profile" },
-  { label: "Notifications", to: "/notifications" },
-  { label: "Children", to: "/children" },
-  { label: "Incidents", to: "/incidents" },
-  { label: "Pickup", to: "/pickup" },
-  { label: "Audit", to: "/audit" },
-  { label: "Admin", to: "/admin" },
-] as const;
+import { visibleAccessNavigation } from "../../features/access/access-policy";
+import { useAccess } from "../../features/access/useAccess";
 
 export function AppNavigation() {
+  const state = useAccess();
+  const navigationItems =
+    state.status === "ready"
+      ? [
+          { label: "Home", to: "/" },
+          { label: "Session", to: "/session" },
+          ...visibleAccessNavigation(state.access),
+        ]
+      : state.status === "restricted"
+        ? [
+            { label: "Home", to: "/" },
+            { label: "Complete MFA", to: "/mfa/required" },
+            { label: "Session", to: "/session" },
+          ]
+        : [
+            { label: "Home", to: "/" },
+            { label: "Login", to: "/login" },
+            { label: "Register", to: "/register" },
+          ];
+
   return (
     <nav aria-label="Primary navigation">
       <ul className="navigation-list">

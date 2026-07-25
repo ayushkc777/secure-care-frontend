@@ -8,9 +8,11 @@ import { AuthCard } from "../components/auth/AuthCard";
 import { ErrorSummary, FieldError } from "../components/auth/FormFeedback";
 import { useAuthFlow } from "../features/auth/useAuthFlow";
 import { recoveryFormSchema, type RecoveryForm } from "../features/auth/auth.schemas";
+import { useAccess } from "../features/access/useAccess";
 
 export function MfaRecoveryLoginPage() {
   const navigate = useNavigate();
+  const { refresh } = useAccess();
   const { challengeToken, clearChallenge } = useAuthFlow();
   const [requestError, setRequestError] = useState<string | null>(null);
   const {
@@ -29,6 +31,7 @@ export function MfaRecoveryLoginPage() {
         recoveryCode,
       });
       clearChallenge();
+      await refresh();
       void navigate("/session");
     } catch (error) {
       setRequestError(safeApiMessage(error));

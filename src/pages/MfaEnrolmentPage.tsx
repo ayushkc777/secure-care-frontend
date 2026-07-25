@@ -10,6 +10,7 @@ import { ErrorSummary, FieldError } from "../components/auth/FormFeedback";
 import { useAuthFlow } from "../features/auth/useAuthFlow";
 import { totpFormSchema, type TotpForm } from "../features/auth/auth.schemas";
 import type { MfaSetup } from "../features/auth/auth.types";
+import { useAccess } from "../features/access/useAccess";
 
 type ConfirmationResponse = {
   authenticationState: "MFA_AUTHENTICATED";
@@ -18,6 +19,7 @@ type ConfirmationResponse = {
 
 export function MfaEnrolmentPage() {
   const navigate = useNavigate();
+  const { refresh } = useAccess();
   const { clearSetup, setup, setRecoveryCodes, setSetup } = useAuthFlow();
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
   const [requestError, setRequestError] = useState<string | null>(null);
@@ -64,6 +66,7 @@ export function MfaEnrolmentPage() {
       });
       setRecoveryCodes(result.recoveryCodes);
       clearSetup();
+      await refresh();
       void navigate("/mfa/recovery-codes", { replace: true });
     } catch (error) {
       setRequestError(safeApiMessage(error));

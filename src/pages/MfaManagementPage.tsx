@@ -5,6 +5,7 @@ import { postWithCsrf, safeApiMessage } from "../api/client";
 import { AuthCard } from "../components/auth/AuthCard";
 import { ErrorSummary } from "../components/auth/FormFeedback";
 import { useAuthFlow } from "../features/auth/useAuthFlow";
+import { useAccess } from "../features/access/useAccess";
 
 type RegenerateResponse = {
   recoveryCodes: string[];
@@ -12,6 +13,7 @@ type RegenerateResponse = {
 
 export function MfaManagementPage() {
   const navigate = useNavigate();
+  const { refresh } = useAccess();
   const { setRecoveryCodes } = useAuthFlow();
   const [requestError, setRequestError] = useState<string | null>(null);
   const [busyAction, setBusyAction] = useState<"regenerate" | "disable" | null>(null);
@@ -35,6 +37,7 @@ export function MfaManagementPage() {
     setRequestError(null);
     try {
       await postWithCsrf("/api/v1/auth/mfa/disable");
+      await refresh();
       void navigate("/mfa/required", { replace: true });
     } catch (error) {
       setRequestError(safeApiMessage(error));

@@ -209,6 +209,17 @@ p {
   font: inherit;
 }
 
+.auth-form select {
+  width: 100%;
+  min-height: 3rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.65rem;
+  padding: 0.7rem 0.85rem;
+  background: var(--color-canvas);
+  color: var(--color-heading);
+  font: inherit;
+}
+
 .auth-form input:focus {
   border-color: var(--color-accent);
   outline: 3px solid color-mix(in srgb, var(--color-focus) 35%, transparent);
@@ -419,6 +430,106 @@ p {
   margin: 0;
   overflow-wrap: anywhere;
   color: var(--color-heading);
+}
+
+.section-heading {
+  margin: 2.5rem 0 1rem;
+  color: var(--color-heading);
+}
+
+.access-list,
+.metadata-list,
+.scope-link-list {
+  display: grid;
+  gap: 0.75rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.access-list li,
+.metadata-list li {
+  display: grid;
+  gap: 0.25rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.7rem;
+  padding: 1rem;
+}
+
+.access-list span,
+.metadata-list span {
+  color: var(--color-muted);
+}
+
+.scope-link-list a {
+  display: block;
+  border: 1px solid var(--color-border);
+  border-radius: 0.7rem;
+  padding: 1rem;
+  color: var(--color-accent);
+  font-weight: 750;
+}
+
+.access-centre-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 1rem;
+}
+
+.access-centre-grid section {
+  overflow-wrap: anywhere;
+  border: 1px solid var(--color-border);
+  border-radius: 0.7rem;
+  padding: 1rem;
+}
+
+.access-centre-grid h3 {
+  margin: 0;
+}
+
+.responsive-table {
+  overflow-x: auto;
+  margin-top: 2rem;
+}
+
+.responsive-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.responsive-table caption {
+  padding: 0 0 0.75rem;
+  color: var(--color-muted);
+  text-align: left;
+}
+
+.responsive-table th,
+.responsive-table td {
+  padding: 0.85rem;
+  border-bottom: 1px solid var(--color-border);
+  overflow-wrap: anywhere;
+  text-align: left;
+  vertical-align: top;
+}
+
+.table-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.table-actions button {
+  min-height: 2.3rem;
+  padding: 0.4rem 0.65rem;
+}
+
+.success-panel {
+  margin-top: 1.5rem;
+  border-left: 4px solid #067647;
+  border-radius: 0.7rem;
+  padding: 1rem;
+  background: #ecfdf3;
+  color: #05603a;
 }
 
 @media (max-width: 36rem) {
