@@ -52,6 +52,9 @@ export function safeApiMessage(error: unknown): string {
     if (error.response?.status === 404) {
       return "The requested item is unavailable or you do not have access to it.";
     }
+    if (error.response?.status === 409) {
+      return "This record changed or conflicts with another update. Refresh and try again.";
+    }
   }
   return "The request could not be completed. Check the details and try again.";
 }
