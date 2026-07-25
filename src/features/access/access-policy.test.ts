@@ -46,8 +46,35 @@ describe("access policy", () => {
   test("derives navigation from server-provided permissions", () => {
     expect(visibleAccessNavigation(access)).toEqual([
       { label: "My access", to: "/access" },
+      { label: "Care records", to: "/care" },
       { label: "Role assignments", to: "/access/role-assignments" },
       { label: "Child access check", to: "/access/child" },
     ]);
+  });
+
+  test("shows care navigation without exposing manager-only controls", () => {
+    const parentAccess: CurrentAccess = {
+      ...access,
+      centres: [
+        {
+          centreId: "fbab26aa-7d06-4933-802a-91ef3ccb9dbc",
+          permissions: ["account.manage_self", "centre.read", "room.read", "child.read"],
+        },
+      ],
+      assignments: [
+        {
+          id: "2952e833-18d7-476e-8c32-8c541f8f2d82",
+          roleCode: "PARENT",
+          scope: "CENTRE",
+          centreId: "fbab26aa-7d06-4933-802a-91ef3ccb9dbc",
+        },
+      ],
+    };
+    expect(visibleAccessNavigation(parentAccess)).toContainEqual({
+      label: "Care records",
+      to: "/care",
+    });
+    expect(hasPermission(parentAccess, "relationship.manage")).toBe(false);
+    expect(hasPermission(parentAccess, "enrolment.manage")).toBe(false);
   });
 });
