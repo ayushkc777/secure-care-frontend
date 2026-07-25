@@ -37,6 +37,9 @@ export function visibleAccessNavigation(access: CurrentAccess): {
   to: string;
 }[] {
   const items = [{ label: "My access", to: "/access" }];
+  if (hasPermission(access, "centre.read") || hasPermission(access, "child.read")) {
+    items.push({ label: "Care records", to: "/care" });
+  }
   if (hasPermission(access, "role_assignment.read")) {
     items.push({ label: "Role assignments", to: "/access/role-assignments" });
   }

@@ -7,7 +7,11 @@ import { AccessDeniedPage } from "../pages/AccessDeniedPage";
 import { AdminPage } from "../pages/AdminPage";
 import { AuditPage } from "../pages/AuditPage";
 import { ChildAccessPage } from "../pages/ChildAccessPage";
+import { ChildRecordPage } from "../pages/ChildRecordPage";
 import { ChildrenPage } from "../pages/ChildrenPage";
+import { CareChildrenPage } from "../pages/CareChildrenPage";
+import { CareIndexPage } from "../pages/CareIndexPage";
+import { CentreWorkspacePage } from "../pages/CentreWorkspacePage";
 import { DashboardPage } from "../pages/DashboardPage";
 import { IncidentsPage } from "../pages/IncidentsPage";
 import { LandingPage } from "../pages/LandingPage";
@@ -31,6 +35,7 @@ import { RoleAssignmentIndexPage } from "../pages/RoleAssignmentIndexPage";
 import { RoleAssignmentsPage } from "../pages/RoleAssignmentsPage";
 import { SecurityRecordIndexPage } from "../pages/SecurityRecordIndexPage";
 import { SecurityRecordsPage } from "../pages/SecurityRecordsPage";
+import { RoomsPage } from "../pages/RoomsPage";
 
 export const router = createBrowserRouter([
   {
@@ -49,6 +54,46 @@ export const router = createBrowserRouter([
       { path: "mfa/step-up", element: <StepUpPage /> },
       { path: "mfa/manage", element: <MfaManagementPage /> },
       { path: "session", element: <SessionStatusPage /> },
+      {
+        path: "care",
+        element: (
+          <ProtectedRoute permission={Permission.CentreRead}>
+            <CareIndexPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "care/centres/:centreId",
+        element: (
+          <ProtectedRoute permission={Permission.CentreRead} useCentreParam>
+            <CentreWorkspacePage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "care/centres/:centreId/rooms",
+        element: (
+          <ProtectedRoute permission={Permission.RoomRead} useCentreParam>
+            <RoomsPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "care/centres/:centreId/children",
+        element: (
+          <ProtectedRoute permission={Permission.ChildRead} useCentreParam>
+            <CareChildrenPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "care/centres/:centreId/children/:childId",
+        element: (
+          <ProtectedRoute permission={Permission.ChildRead} useCentreParam>
+            <ChildRecordPage />
+          </ProtectedRoute>
+        ),
+      },
       {
         path: "access",
         element: (

@@ -27,7 +27,7 @@ export async function postWithCsrf<T>(
 }
 
 export async function mutateWithCsrf<T>(
-  method: "post" | "patch" | "delete",
+  method: "post" | "put" | "patch" | "delete",
   path: string,
   body: Record<string, unknown> = {},
 ): Promise<T> {
