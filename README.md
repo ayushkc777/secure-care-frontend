@@ -1,6 +1,7 @@
 # SecureCare Frontend
 
-React, TypeScript, Vite, and Tailwind CSS foundation for SecureCare.
+React, TypeScript, Vite, Tailwind CSS and the Phase 5 authentication interface for
+SecureCare.
 
 ## Requirements
 
@@ -26,5 +27,12 @@ npm run typecheck
 npm run build
 ```
 
-The Phase 2 pages are intentionally navigation-only placeholders. Authentication and childcare
-features are not implemented.
+Phase 5 implements only the login and MFA interfaces: TOTP verification and
+enrolment, local QR rendering, recovery-code login and one-time display, step-up,
+MFA management, mandatory-enrolment notice and current session status. Opaque
+session tokens remain in Secure HttpOnly cookies. Temporary challenges, setup
+secrets and recovery codes are held only in React memory and disappear when their
+flow ends or the page reloads.
+
+The non-authentication Phase 2 pages remain navigation-only placeholders. No RBAC
+or childcare behaviour is implemented.

@@ -4,6 +4,7 @@ const navigationItems = [
   { label: "Home", to: "/" },
   { label: "Login", to: "/login" },
   { label: "Register", to: "/register" },
+  { label: "Session", to: "/session" },
   { label: "Dashboard", to: "/dashboard" },
   { label: "Profile", to: "/profile" },
   { label: "Notifications", to: "/notifications" },
