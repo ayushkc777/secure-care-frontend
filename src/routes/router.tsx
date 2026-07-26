@@ -46,6 +46,10 @@ import { AttendanceHistoryPage } from "../pages/AttendanceHistoryPage";
 import { HealthPage } from "../pages/HealthPage";
 import { HealthChildrenPage } from "../pages/HealthChildrenPage";
 import { HealthWorkspacePage } from "../pages/HealthWorkspacePage";
+import { CommunicationsPage } from "../pages/CommunicationsPage";
+import { CommunicationWorkspacePage } from "../pages/CommunicationWorkspacePage";
+import { ConversationPage } from "../pages/ConversationPage";
+import { NotificationWorkspacePage } from "../pages/NotificationWorkspacePage";
 
 export const router = createBrowserRouter([
   {
@@ -163,7 +167,46 @@ export const router = createBrowserRouter([
       { path: "access-denied", element: <AccessDeniedPage /> },
       { path: "dashboard", element: <DashboardPage /> },
       { path: "profile", element: <ProfilePage /> },
-      { path: "notifications", element: <NotificationsPage /> },
+      {
+        path: "notifications",
+        element: (
+          <ProtectedRoute permission={Permission.NotificationRead}>
+            <NotificationsPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "notifications/centres/:centreId",
+        element: (
+          <ProtectedRoute permission={Permission.NotificationRead} useCentreParam>
+            <NotificationWorkspacePage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "communications",
+        element: (
+          <ProtectedRoute permission={Permission.CommunicationRead}>
+            <CommunicationsPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "communications/centres/:centreId",
+        element: (
+          <ProtectedRoute permission={Permission.CommunicationRead} useCentreParam>
+            <CommunicationWorkspacePage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "communications/centres/:centreId/conversations/:conversationId",
+        element: (
+          <ProtectedRoute permission={Permission.CommunicationRead} useCentreParam>
+            <ConversationPage />
+          </ProtectedRoute>
+        ),
+      },
       { path: "children", element: <ChildrenPage /> },
       {
         path: "incidents",

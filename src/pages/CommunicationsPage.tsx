@@ -7,7 +7,7 @@ import { hasPermission } from "../features/access/access-policy";
 import { useAccess } from "../features/access/useAccess";
 import type { Centre } from "../features/childcare/childcare.types";
 
-export function NotificationsPage() {
+export function CommunicationsPage() {
   const access = useAccess();
   const [centres, setCentres] = useState<Centre[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -20,7 +20,7 @@ export function NotificationsPage() {
       .then(({ data }) => {
         if (current) {
           setCentres(
-            data.centres.filter(({ id }) => hasPermission(access.access, "notification.read", id)),
+            data.centres.filter(({ id }) => hasPermission(access.access, "communication.read", id)),
           );
         }
       })
@@ -31,19 +31,26 @@ export function NotificationsPage() {
   }, [access]);
 
   return (
-    <section className="content-card" aria-labelledby="notifications-title">
-      <p className="eyebrow">Operational updates</p>
-      <h1 id="notifications-title">Notification centre</h1>
-      <p>Choose an authorised centre to view recipient-scoped delivery history.</p>
+    <section className="content-card" aria-labelledby="communications-title">
+      <p className="eyebrow">Private centre communication</p>
+      <h1 id="communications-title">Messages and announcements</h1>
+      <p>
+        Choose an authorised centre. Message content stays in memory and is never stored in browser
+        storage.
+      </p>
       <ErrorSummary message={error} />
-      <ul className="record-grid">
-        {centres.map((centre) => (
-          <li key={centre.id}>
-            <h2>{centre.name}</h2>
-            <Link to={`/notifications/centres/${centre.id}`}>View notifications</Link>
-          </li>
-        ))}
-      </ul>
+      {centres.length === 0 && error === null ? (
+        <p>No communication workspace is available through your current permissions.</p>
+      ) : (
+        <ul className="record-grid">
+          {centres.map((centre) => (
+            <li key={centre.id}>
+              <h2>{centre.name}</h2>
+              <Link to={`/communications/centres/${centre.id}`}>Open secure inbox</Link>
+            </li>
+          ))}
+        </ul>
+      )}
     </section>
   );
 }

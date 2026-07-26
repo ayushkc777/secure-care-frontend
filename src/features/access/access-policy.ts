@@ -68,5 +68,11 @@ export function visibleAccessNavigation(access: CurrentAccess): {
   if (hasPermission(access, "health.read") || hasPermission(access, "medication.read")) {
     items.push({ label: "Health and medication", to: "/health" });
   }
+  if (hasPermission(access, "communication.read")) {
+    items.push({ label: "Messages", to: "/communications" });
+  }
+  if (hasPermission(access, "notification.read")) {
+    items.push({ label: "Notifications", to: "/notifications" });
+  }
   return items;
 }

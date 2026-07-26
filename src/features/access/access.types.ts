@@ -53,6 +53,12 @@ export const Permission = {
   MedicationSuspend: "medication.suspend",
   MedicationCorrect: "medication.correct",
   MedicationHistoryRead: "medication.history.read",
+  CommunicationRead: "communication.read",
+  CommunicationSend: "communication.send",
+  CommunicationManage: "communication.manage",
+  CommunicationAuditRead: "communication.audit.read",
+  NotificationRead: "notification.read",
+  NotificationPreferenceManage: "notification_preference.manage",
   AuditRead: "audit.read",
   SecurityAlertRead: "security_alert.read",
 } as const;
