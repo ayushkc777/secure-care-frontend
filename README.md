@@ -79,3 +79,6 @@ placed in browser storage. Payment, upload, external notification delivery, pred
 analytics, biometric and GPS features remain deferred. The open React
 Router advisory and its temporary mitigation remain recorded in
 [`docs/security/dependency-risk-register.md`](docs/security/dependency-risk-register.md).
+Phase 14 also adds production document CSP, framing, content-type, referrer,
+permissions and cross-origin isolation headers. TLS/HSTS remain deployment-edge
+responsibilities and are completed in the production-readiness guidance.
