@@ -1,7 +1,8 @@
 # SecureCare Frontend
 
 React, TypeScript, Vite, Tailwind CSS and the SecureCare authentication, authorisation,
-childcare, secure pickup, incident, safeguarding, and Phase 10 attendance interface.
+childcare, secure pickup, incident, safeguarding, attendance, and Phase 11 health and
+medication interface.
 
 ## Requirements
 
@@ -44,8 +45,16 @@ incident and safeguarding state remains in memory and is never placed in browser
 The backend remains authoritative for centre, child, lifecycle, Parent relationship and
 safeguarding access.
 
+Phase 11 adds permission-aware health summaries, allergy and medical alerts, Parent
+medication-authorisation forms, Manager approval/lifecycle actions, active schedules,
+Educator administration outcomes, history, suspension/discontinuation and append-only
+correction workflows. The UI uses strict Zod validation and server-derived permissions;
+recent MFA, centre isolation, Parent relationship checks and lifecycle enforcement remain
+backend security boundaries. Sensitive health and medication responses remain in React
+memory only.
+
 Pickup codes, authorisation lists, child records and verification state are also never
-placed in browser storage. Attendance, medication, notification, payment, upload, external
-reporting, biometric and dashboard features remain deferred. The open React
+placed in browser storage. Notification, payment, upload, external reporting, biometric,
+GPS and analytics features remain deferred. The open React
 Router advisory and its temporary mitigation remain recorded in
 [`docs/security/dependency-risk-register.md`](docs/security/dependency-risk-register.md).
