@@ -46,6 +46,7 @@ export function ChildRecordPage() {
     readyAccess !== null && hasPermission(readyAccess, "enrolment.manage", centreId);
   const canReadAttendance =
     readyAccess !== null && hasPermission(readyAccess, "attendance.history.read", centreId);
+  const canReadHealth = readyAccess !== null && hasPermission(readyAccess, "health.read", centreId);
 
   const childForm = useForm<ChildForm>({ resolver: zodResolver(childFormSchema) });
   const relationshipForm = useForm<RelationshipForm>({
@@ -203,6 +204,11 @@ export function ChildRecordPage() {
       {canReadAttendance && (
         <Link to={`/attendance/centres/${centreId}/children/${childId}`}>
           View attendance history
+        </Link>
+      )}
+      {canReadHealth && (
+        <Link to={`/health/centres/${centreId}/children/${childId}`}>
+          View health and medication record
         </Link>
       )}
       <ErrorSummary message={requestError} />

@@ -43,6 +43,9 @@ import { SafeguardingPage } from "../pages/SafeguardingPage";
 import { AttendancePage } from "../pages/AttendancePage";
 import { AttendanceWorkspacePage } from "../pages/AttendanceWorkspacePage";
 import { AttendanceHistoryPage } from "../pages/AttendanceHistoryPage";
+import { HealthPage } from "../pages/HealthPage";
+import { HealthChildrenPage } from "../pages/HealthChildrenPage";
+import { HealthWorkspacePage } from "../pages/HealthWorkspacePage";
 
 export const router = createBrowserRouter([
   {
@@ -223,6 +226,30 @@ export const router = createBrowserRouter([
         element: (
           <ProtectedRoute permission={Permission.AttendanceHistoryRead} useCentreParam>
             <AttendanceHistoryPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "health",
+        element: (
+          <ProtectedRoute permission={Permission.HealthRead}>
+            <HealthPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "health/centres/:centreId",
+        element: (
+          <ProtectedRoute permission={Permission.HealthRead} useCentreParam>
+            <HealthChildrenPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "health/centres/:centreId/children/:childId",
+        element: (
+          <ProtectedRoute permission={Permission.HealthRead} useCentreParam>
+            <HealthWorkspacePage />
           </ProtectedRoute>
         ),
       },
