@@ -1,7 +1,7 @@
 # SecureCare Frontend
 
 React, TypeScript, Vite, Tailwind CSS and the SecureCare authentication, authorisation,
-childcare and Phase 8 secure pickup interface.
+childcare, secure pickup and Phase 9 incident and safeguarding interface.
 
 ## Requirements
 
@@ -34,8 +34,14 @@ Managers and Administrators with the separate override permission can record an
 emergency override after recent MFA. The backend remains the authorisation boundary;
 hiding a control is only a usability measure.
 
-Pickup codes, authorisation lists, child records and verification state are never
-placed in browser storage. QR, incident, attendance, medication, notification,
-payment, upload, biometric and dashboard features remain deferred. The open React
+Phase 9 adds permission-aware incident centre/list, draft, detail, review,
+Parent-acknowledgement, immutable-history and separately guarded safeguarding pages. Sensitive
+incident and safeguarding state remains in memory and is never placed in browser storage.
+The backend remains authoritative for centre, child, lifecycle, Parent relationship and
+safeguarding access.
+
+Pickup codes, authorisation lists, child records and verification state are also never
+placed in browser storage. Attendance, medication, notification, payment, upload, external
+reporting, biometric and dashboard features remain deferred. The open React
 Router advisory and its temporary mitigation remain recorded in
 [`docs/security/dependency-risk-register.md`](docs/security/dependency-risk-register.md).
