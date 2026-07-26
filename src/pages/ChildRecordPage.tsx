@@ -44,6 +44,8 @@ export function ChildRecordPage() {
     readyAccess !== null && hasPermission(readyAccess, "relationship.manage", centreId);
   const canManageEnrolment =
     readyAccess !== null && hasPermission(readyAccess, "enrolment.manage", centreId);
+  const canReadAttendance =
+    readyAccess !== null && hasPermission(readyAccess, "attendance.history.read", centreId);
 
   const childForm = useForm<ChildForm>({ resolver: zodResolver(childFormSchema) });
   const relationshipForm = useForm<RelationshipForm>({
@@ -198,6 +200,11 @@ export function ChildRecordPage() {
       <p className="eyebrow">Sensitive childcare record</p>
       <h1 id="child-record-title">{child?.displayName ?? "Loading child record"}</h1>
       <p>Only fields authorised for your current role are returned by the server.</p>
+      {canReadAttendance && (
+        <Link to={`/attendance/centres/${centreId}/children/${childId}`}>
+          View attendance history
+        </Link>
+      )}
       <ErrorSummary message={requestError} />
       {child !== null && (
         <dl className="detail-list">

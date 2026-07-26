@@ -40,6 +40,9 @@ import { SecurityRecordIndexPage } from "../pages/SecurityRecordIndexPage";
 import { SecurityRecordsPage } from "../pages/SecurityRecordsPage";
 import { RoomsPage } from "../pages/RoomsPage";
 import { SafeguardingPage } from "../pages/SafeguardingPage";
+import { AttendancePage } from "../pages/AttendancePage";
+import { AttendanceWorkspacePage } from "../pages/AttendanceWorkspacePage";
+import { AttendanceHistoryPage } from "../pages/AttendanceHistoryPage";
 
 export const router = createBrowserRouter([
   {
@@ -196,6 +199,30 @@ export const router = createBrowserRouter([
         element: (
           <ProtectedRoute permission={Permission.IncidentHistoryRead} useCentreParam>
             <IncidentDetailPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "attendance",
+        element: (
+          <ProtectedRoute permission={Permission.AttendanceHistoryRead}>
+            <AttendancePage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "attendance/centres/:centreId",
+        element: (
+          <ProtectedRoute permission={Permission.AttendanceRead} useCentreParam>
+            <AttendanceWorkspacePage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "attendance/centres/:centreId/children/:childId",
+        element: (
+          <ProtectedRoute permission={Permission.AttendanceHistoryRead} useCentreParam>
+            <AttendanceHistoryPage />
           </ProtectedRoute>
         ),
       },

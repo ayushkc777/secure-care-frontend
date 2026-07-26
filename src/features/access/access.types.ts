@@ -39,6 +39,10 @@ export const Permission = {
   PickupVerificationOverride: "pickup_verification.override",
   PickupCompletionRead: "pickup_completion.read",
   PickupCompletionCreate: "pickup_completion.create",
+  AttendanceRead: "attendance.read",
+  AttendanceManage: "attendance.manage",
+  AttendanceCorrect: "attendance.correct",
+  AttendanceHistoryRead: "attendance.history.read",
   AuditRead: "audit.read",
   SecurityAlertRead: "security_alert.read",
 } as const;
