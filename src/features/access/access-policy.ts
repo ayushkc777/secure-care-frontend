@@ -56,5 +56,8 @@ export function visibleAccessNavigation(access: CurrentAccess): {
   ) {
     items.push({ label: "Secure pickup", to: "/pickup" });
   }
+  if (hasPermission(access, "incident.read") || hasPermission(access, "incident.history.read")) {
+    items.push({ label: "Incident records", to: "/incidents" });
+  }
   return items;
 }
