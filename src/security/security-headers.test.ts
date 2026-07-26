@@ -7,7 +7,7 @@ const headers = readFileSync(new URL("../../nginx-security-headers.conf", import
 
 describe("production document security headers", () => {
   test("defines CSP, framing, content type, privacy and capability restrictions", () => {
-    expect(nginx.match(/include \/etc\/nginx\/security-headers\.conf/gu)).toHaveLength(2);
+    expect(nginx.match(/include \/etc\/nginx\/security-headers\.conf/gu)).toHaveLength(5);
     expect(headers).toContain("Content-Security-Policy");
     expect(headers).toContain("frame-ancestors 'none'");
     expect(headers).toContain("object-src 'none'");

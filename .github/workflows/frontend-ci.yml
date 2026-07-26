@@ -44,3 +44,9 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      - name: Audit dependencies and fail on Critical findings
+        run: npm audit --audit-level=critical
+
+      - name: Build production image
+        run: docker build --target production -t securecare-frontend:ci .

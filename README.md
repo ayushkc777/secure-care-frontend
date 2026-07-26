@@ -19,6 +19,11 @@ npm run dev
 
 Open `http://localhost:5173`.
 
+Registration is available at `/register`. The UI performs strict password-policy and
+zxcvbn strength feedback before sending only email and password to the existing CSRF-
+protected registration endpoint. The server remains authoritative and returns a generic
+anti-enumeration response; no plaintext password is persisted in the browser.
+
 ## Quality checks
 
 ```bash
@@ -82,3 +87,8 @@ Router advisory and its temporary mitigation remain recorded in
 Phase 14 also adds production document CSP, framing, content-type, referrer,
 permissions and cross-origin isolation headers. TLS/HSTS remain deployment-edge
 responsibilities and are completed in the production-readiness guidance.
+
+Phase 15 lazy-loads every route. The production entry JavaScript decreased from
+627.18 kB (182.82 kB gzip) to 422.92 kB (132.21 kB gzip); route code is emitted in
+separate chunks and the previous 500 kB warning is gone. The production Nginx image exposes
+the API through same-origin proxy paths and allows no development API origin in its CSP.

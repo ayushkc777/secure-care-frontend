@@ -1,57 +1,101 @@
+import { lazy, type ComponentType } from "react";
 import { createBrowserRouter } from "react-router-dom";
 
 import { AppShell } from "../components/layout/AppShell";
 import { ProtectedRoute } from "../components/access/ProtectedRoute";
 import { Permission } from "../features/access/access.types";
-import { AccessDeniedPage } from "../pages/AccessDeniedPage";
-import { AdminPage } from "../pages/AdminPage";
-import { AuditPage } from "../pages/AuditPage";
-import { ChildAccessPage } from "../pages/ChildAccessPage";
-import { ChildRecordPage } from "../pages/ChildRecordPage";
-import { ChildrenPage } from "../pages/ChildrenPage";
-import { CareChildrenPage } from "../pages/CareChildrenPage";
-import { CareIndexPage } from "../pages/CareIndexPage";
-import { CentreWorkspacePage } from "../pages/CentreWorkspacePage";
-import { DashboardPage } from "../pages/DashboardPage";
-import { IncidentsPage } from "../pages/IncidentsPage";
-import { IncidentDetailPage } from "../pages/IncidentDetailPage";
-import { IncidentWorkspacePage } from "../pages/IncidentWorkspacePage";
-import { LandingPage } from "../pages/LandingPage";
-import { LoginPage } from "../pages/LoginPage";
-import { MfaEnrolmentPage } from "../pages/MfaEnrolmentPage";
-import { MfaManagementPage } from "../pages/MfaManagementPage";
-import { MfaRecoveryLoginPage } from "../pages/MfaRecoveryLoginPage";
-import { MfaRequiredPage } from "../pages/MfaRequiredPage";
-import { MfaVerifyPage } from "../pages/MfaVerifyPage";
-import { NotFoundPage } from "../pages/NotFoundPage";
-import { NotificationsPage } from "../pages/NotificationsPage";
-import { PickupPage } from "../pages/PickupPage";
-import { PickupWorkspacePage } from "../pages/PickupWorkspacePage";
-import { ProfilePage } from "../pages/ProfilePage";
-import { RegisterPage } from "../pages/RegisterPage";
-import { RecoveryCodesPage } from "../pages/RecoveryCodesPage";
-import { RouteErrorPage } from "../pages/RouteErrorPage";
-import { SessionStatusPage } from "../pages/SessionStatusPage";
-import { StepUpPage } from "../pages/StepUpPage";
-import { CurrentAccessPage } from "../pages/CurrentAccessPage";
-import { RoleAssignmentIndexPage } from "../pages/RoleAssignmentIndexPage";
-import { RoleAssignmentsPage } from "../pages/RoleAssignmentsPage";
-import { SecurityRecordIndexPage } from "../pages/SecurityRecordIndexPage";
-import { SecurityRecordsPage } from "../pages/SecurityRecordsPage";
-import { RoomsPage } from "../pages/RoomsPage";
-import { SafeguardingPage } from "../pages/SafeguardingPage";
-import { AttendancePage } from "../pages/AttendancePage";
-import { AttendanceWorkspacePage } from "../pages/AttendanceWorkspacePage";
-import { AttendanceHistoryPage } from "../pages/AttendanceHistoryPage";
-import { HealthPage } from "../pages/HealthPage";
-import { HealthChildrenPage } from "../pages/HealthChildrenPage";
-import { HealthWorkspacePage } from "../pages/HealthWorkspacePage";
-import { CommunicationsPage } from "../pages/CommunicationsPage";
-import { CommunicationWorkspacePage } from "../pages/CommunicationWorkspacePage";
-import { ConversationPage } from "../pages/ConversationPage";
-import { NotificationWorkspacePage } from "../pages/NotificationWorkspacePage";
-import { ReportsPage } from "../pages/ReportsPage";
-import { ReportDashboardPage } from "../pages/ReportDashboardPage";
+const page = <T extends Record<K, ComponentType>, K extends keyof T>(
+  loader: () => Promise<T>,
+  name: K,
+) => lazy(async () => ({ default: (await loader())[name] }));
+
+const AccessDeniedPage = page(() => import("../pages/AccessDeniedPage"), "AccessDeniedPage");
+const AttendanceHistoryPage = page(
+  () => import("../pages/AttendanceHistoryPage"),
+  "AttendanceHistoryPage",
+);
+const AttendancePage = page(() => import("../pages/AttendancePage"), "AttendancePage");
+const AttendanceWorkspacePage = page(
+  () => import("../pages/AttendanceWorkspacePage"),
+  "AttendanceWorkspacePage",
+);
+const CareChildrenPage = page(() => import("../pages/CareChildrenPage"), "CareChildrenPage");
+const CareIndexPage = page(() => import("../pages/CareIndexPage"), "CareIndexPage");
+const CentreWorkspacePage = page(
+  () => import("../pages/CentreWorkspacePage"),
+  "CentreWorkspacePage",
+);
+const ChildAccessPage = page(() => import("../pages/ChildAccessPage"), "ChildAccessPage");
+const ChildRecordPage = page(() => import("../pages/ChildRecordPage"), "ChildRecordPage");
+const CommunicationsPage = page(() => import("../pages/CommunicationsPage"), "CommunicationsPage");
+const CommunicationWorkspacePage = page(
+  () => import("../pages/CommunicationWorkspacePage"),
+  "CommunicationWorkspacePage",
+);
+const ConversationPage = page(() => import("../pages/ConversationPage"), "ConversationPage");
+const CurrentAccessPage = page(() => import("../pages/CurrentAccessPage"), "CurrentAccessPage");
+const DashboardPage = page(() => import("../pages/DashboardPage"), "DashboardPage");
+const HealthChildrenPage = page(() => import("../pages/HealthChildrenPage"), "HealthChildrenPage");
+const HealthPage = page(() => import("../pages/HealthPage"), "HealthPage");
+const HealthWorkspacePage = page(
+  () => import("../pages/HealthWorkspacePage"),
+  "HealthWorkspacePage",
+);
+const IncidentDetailPage = page(() => import("../pages/IncidentDetailPage"), "IncidentDetailPage");
+const IncidentsPage = page(() => import("../pages/IncidentsPage"), "IncidentsPage");
+const IncidentWorkspacePage = page(
+  () => import("../pages/IncidentWorkspacePage"),
+  "IncidentWorkspacePage",
+);
+const LandingPage = page(() => import("../pages/LandingPage"), "LandingPage");
+const LoginPage = page(() => import("../pages/LoginPage"), "LoginPage");
+const MfaEnrolmentPage = page(() => import("../pages/MfaEnrolmentPage"), "MfaEnrolmentPage");
+const MfaManagementPage = page(() => import("../pages/MfaManagementPage"), "MfaManagementPage");
+const MfaRecoveryLoginPage = page(
+  () => import("../pages/MfaRecoveryLoginPage"),
+  "MfaRecoveryLoginPage",
+);
+const MfaRequiredPage = page(() => import("../pages/MfaRequiredPage"), "MfaRequiredPage");
+const MfaVerifyPage = page(() => import("../pages/MfaVerifyPage"), "MfaVerifyPage");
+const NotificationWorkspacePage = page(
+  () => import("../pages/NotificationWorkspacePage"),
+  "NotificationWorkspacePage",
+);
+const NotificationsPage = page(() => import("../pages/NotificationsPage"), "NotificationsPage");
+const NotFoundPage = page(() => import("../pages/NotFoundPage"), "NotFoundPage");
+const PickupPage = page(() => import("../pages/PickupPage"), "PickupPage");
+const PickupWorkspacePage = page(
+  () => import("../pages/PickupWorkspacePage"),
+  "PickupWorkspacePage",
+);
+const RecoveryCodesPage = page(() => import("../pages/RecoveryCodesPage"), "RecoveryCodesPage");
+const RegisterPage = page(() => import("../pages/RegisterPage"), "RegisterPage");
+const ReportDashboardPage = page(
+  () => import("../pages/ReportDashboardPage"),
+  "ReportDashboardPage",
+);
+const ReportsPage = page(() => import("../pages/ReportsPage"), "ReportsPage");
+const RoleAssignmentIndexPage = page(
+  () => import("../pages/RoleAssignmentIndexPage"),
+  "RoleAssignmentIndexPage",
+);
+const RoleAssignmentsPage = page(
+  () => import("../pages/RoleAssignmentsPage"),
+  "RoleAssignmentsPage",
+);
+const RoomsPage = page(() => import("../pages/RoomsPage"), "RoomsPage");
+const RouteErrorPage = page(() => import("../pages/RouteErrorPage"), "RouteErrorPage");
+const SafeguardingPage = page(() => import("../pages/SafeguardingPage"), "SafeguardingPage");
+const SecurityRecordIndexPage = page(
+  () => import("../pages/SecurityRecordIndexPage"),
+  "SecurityRecordIndexPage",
+);
+const SecurityRecordsPage = page(
+  () => import("../pages/SecurityRecordsPage"),
+  "SecurityRecordsPage",
+);
+const SessionStatusPage = page(() => import("../pages/SessionStatusPage"), "SessionStatusPage");
+const StepUpPage = page(() => import("../pages/StepUpPage"), "StepUpPage");
 
 export const router = createBrowserRouter([
   {
@@ -168,7 +212,6 @@ export const router = createBrowserRouter([
       },
       { path: "access-denied", element: <AccessDeniedPage /> },
       { path: "dashboard", element: <DashboardPage /> },
-      { path: "profile", element: <ProfilePage /> },
       {
         path: "notifications",
         element: (
@@ -225,7 +268,6 @@ export const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
-      { path: "children", element: <ChildrenPage /> },
       {
         path: "incidents",
         element: (
@@ -330,8 +372,6 @@ export const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
-      { path: "audit", element: <AuditPage /> },
-      { path: "admin", element: <AdminPage /> },
       { path: "*", element: <NotFoundPage /> },
     ],
   },
