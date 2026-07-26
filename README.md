@@ -1,7 +1,7 @@
 # SecureCare Frontend
 
 React, TypeScript, Vite, Tailwind CSS and the SecureCare authentication, authorisation,
-childcare, secure pickup and Phase 9 incident and safeguarding interface.
+childcare, secure pickup, incident, safeguarding, and Phase 10 attendance interface.
 
 ## Requirements
 
@@ -33,6 +33,10 @@ a newly generated code once. Educators can verify and complete an authorised pic
 Managers and Administrators with the separate override permission can record an
 emergency override after recent MFA. The backend remains the authorisation boundary;
 hiding a control is only a usability measure.
+
+Phase 10 adds a role-aware daily attendance workspace, room headcounts, explicit check-in,
+check-out, absence, movement and return controls, plus a safe related-child history view.
+Attendance responses remain in memory only; the interface does not use browser storage.
 
 Phase 9 adds permission-aware incident centre/list, draft, detail, review,
 Parent-acknowledgement, immutable-history and separately guarded safeguarding pages. Sensitive
