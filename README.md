@@ -68,8 +68,14 @@ Message and notification responses remain in React memory only. The backend rema
 source of truth for participants, audience, relationships, centre scope, recent MFA and
 lifecycle transitions.
 
+Phase 13 adds a role-aware report catalogue, bounded date/room/child/status filters,
+summary cards, accessible chart alternatives, paginated tables, printable views and
+recent-MFA-protected CSV exports. Report responses and temporary download blobs are never
+placed in browser storage. CSV formula hardening, relationship filtering, centre isolation
+and export auditing remain enforced by the backend.
+
 Pickup codes, authorisation lists, child records and verification state are also never
-placed in browser storage. Payment, upload, external notification delivery, biometric,
-GPS and analytics features remain deferred. The open React
+placed in browser storage. Payment, upload, external notification delivery, predictive
+analytics, biometric and GPS features remain deferred. The open React
 Router advisory and its temporary mitigation remain recorded in
 [`docs/security/dependency-risk-register.md`](docs/security/dependency-risk-register.md).

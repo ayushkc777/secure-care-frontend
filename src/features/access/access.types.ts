@@ -59,6 +59,10 @@ export const Permission = {
   CommunicationAuditRead: "communication.audit.read",
   NotificationRead: "notification.read",
   NotificationPreferenceManage: "notification_preference.manage",
+  ReportRead: "report.read",
+  ReportSensitiveRead: "report.sensitive.read",
+  ReportExport: "report.export",
+  ReportCrossCentre: "report.cross_centre",
   AuditRead: "audit.read",
   SecurityAlertRead: "security_alert.read",
 } as const;

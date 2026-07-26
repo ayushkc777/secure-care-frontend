@@ -74,5 +74,8 @@ export function visibleAccessNavigation(access: CurrentAccess): {
   if (hasPermission(access, "notification.read")) {
     items.push({ label: "Notifications", to: "/notifications" });
   }
+  if (hasPermission(access, "report.read")) {
+    items.push({ label: "Reports", to: "/reports" });
+  }
   return items;
 }

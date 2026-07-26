@@ -50,6 +50,8 @@ import { CommunicationsPage } from "../pages/CommunicationsPage";
 import { CommunicationWorkspacePage } from "../pages/CommunicationWorkspacePage";
 import { ConversationPage } from "../pages/ConversationPage";
 import { NotificationWorkspacePage } from "../pages/NotificationWorkspacePage";
+import { ReportsPage } from "../pages/ReportsPage";
+import { ReportDashboardPage } from "../pages/ReportDashboardPage";
 
 export const router = createBrowserRouter([
   {
@@ -204,6 +206,22 @@ export const router = createBrowserRouter([
         element: (
           <ProtectedRoute permission={Permission.CommunicationRead} useCentreParam>
             <ConversationPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "reports",
+        element: (
+          <ProtectedRoute permission={Permission.ReportRead}>
+            <ReportsPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "reports/centres/:centreId",
+        element: (
+          <ProtectedRoute permission={Permission.ReportRead} useCentreParam>
+            <ReportDashboardPage />
           </ProtectedRoute>
         ),
       },
