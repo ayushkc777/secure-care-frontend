@@ -49,5 +49,12 @@ export function visibleAccessNavigation(access: CurrentAccess): {
   if (hasPermission(access, "child.read")) {
     items.push({ label: "Child access check", to: "/access/child" });
   }
+  if (
+    hasPermission(access, "pickup_authorisation.read") ||
+    hasPermission(access, "pickup_verification.read") ||
+    hasPermission(access, "pickup_completion.read")
+  ) {
+    items.push({ label: "Secure pickup", to: "/pickup" });
+  }
   return items;
 }

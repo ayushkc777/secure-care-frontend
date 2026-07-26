@@ -24,6 +24,7 @@ import { MfaVerifyPage } from "../pages/MfaVerifyPage";
 import { NotFoundPage } from "../pages/NotFoundPage";
 import { NotificationsPage } from "../pages/NotificationsPage";
 import { PickupPage } from "../pages/PickupPage";
+import { PickupWorkspacePage } from "../pages/PickupWorkspacePage";
 import { ProfilePage } from "../pages/ProfilePage";
 import { RegisterPage } from "../pages/RegisterPage";
 import { RecoveryCodesPage } from "../pages/RecoveryCodesPage";
@@ -156,7 +157,22 @@ export const router = createBrowserRouter([
       { path: "notifications", element: <NotificationsPage /> },
       { path: "children", element: <ChildrenPage /> },
       { path: "incidents", element: <IncidentsPage /> },
-      { path: "pickup", element: <PickupPage /> },
+      {
+        path: "pickup",
+        element: (
+          <ProtectedRoute permission={Permission.PickupAuthorisationRead}>
+            <PickupPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "pickup/centres/:centreId/children/:childId",
+        element: (
+          <ProtectedRoute permission={Permission.PickupAuthorisationRead} useCentreParam>
+            <PickupWorkspacePage />
+          </ProtectedRoute>
+        ),
+      },
       { path: "audit", element: <AuditPage /> },
       { path: "admin", element: <AdminPage /> },
       { path: "*", element: <NotFoundPage /> },

@@ -258,6 +258,17 @@ p {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace !important;
 }
 
+.pickup-code {
+  display: block;
+  margin-top: 1rem;
+  overflow-wrap: anywhere;
+  color: var(--color-heading);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: clamp(1.5rem, 6vw, 2.5rem);
+  font-weight: 800;
+  letter-spacing: 0.2em;
+}
+
 .primary-button,
 .secondary-button,
 .danger-button {
