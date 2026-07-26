@@ -14,6 +14,8 @@ import { CareIndexPage } from "../pages/CareIndexPage";
 import { CentreWorkspacePage } from "../pages/CentreWorkspacePage";
 import { DashboardPage } from "../pages/DashboardPage";
 import { IncidentsPage } from "../pages/IncidentsPage";
+import { IncidentDetailPage } from "../pages/IncidentDetailPage";
+import { IncidentWorkspacePage } from "../pages/IncidentWorkspacePage";
 import { LandingPage } from "../pages/LandingPage";
 import { LoginPage } from "../pages/LoginPage";
 import { MfaEnrolmentPage } from "../pages/MfaEnrolmentPage";
@@ -37,6 +39,7 @@ import { RoleAssignmentsPage } from "../pages/RoleAssignmentsPage";
 import { SecurityRecordIndexPage } from "../pages/SecurityRecordIndexPage";
 import { SecurityRecordsPage } from "../pages/SecurityRecordsPage";
 import { RoomsPage } from "../pages/RoomsPage";
+import { SafeguardingPage } from "../pages/SafeguardingPage";
 
 export const router = createBrowserRouter([
   {
@@ -156,7 +159,46 @@ export const router = createBrowserRouter([
       { path: "profile", element: <ProfilePage /> },
       { path: "notifications", element: <NotificationsPage /> },
       { path: "children", element: <ChildrenPage /> },
-      { path: "incidents", element: <IncidentsPage /> },
+      {
+        path: "incidents",
+        element: (
+          <ProtectedRoute permission={Permission.IncidentHistoryRead}>
+            <IncidentsPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "incidents/centres/:centreId",
+        element: (
+          <ProtectedRoute permission={Permission.IncidentHistoryRead} useCentreParam>
+            <IncidentWorkspacePage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "incidents/centres/:centreId/safeguarding",
+        element: (
+          <ProtectedRoute permission={Permission.SafeguardingRead} useCentreParam>
+            <SafeguardingPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "incidents/centres/:centreId/safeguarding/:concernId",
+        element: (
+          <ProtectedRoute permission={Permission.SafeguardingRead} useCentreParam>
+            <SafeguardingPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "incidents/centres/:centreId/:incidentId",
+        element: (
+          <ProtectedRoute permission={Permission.IncidentHistoryRead} useCentreParam>
+            <IncidentDetailPage />
+          </ProtectedRoute>
+        ),
+      },
       {
         path: "pickup",
         element: (
