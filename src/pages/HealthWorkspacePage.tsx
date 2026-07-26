@@ -247,7 +247,7 @@ export function HealthWorkspacePage() {
       await mutateWithCsrf(
         "post",
         `/api/v1/centres/${centreId}/children/${childId}/medications/${selected.id}/amendments`,
-        { ...values, version: selected.version },
+        { ...values, medicationError: false, version: selected.version },
       );
       amendmentForm.reset();
       setStatusMessage("Append-only medication amendment recorded.");
@@ -491,16 +491,22 @@ export function HealthWorkspacePage() {
                 Suspend
               </button>
             )}
-            {controls.canSuspend && !["DISCONTINUED", "ARCHIVED"].includes(selected.status) && (
-              <button
-                type="button"
-                onClick={() =>
-                  void lifecycle("discontinue", "Discontinued following an authorised instruction.")
-                }
-              >
-                Discontinue
-              </button>
-            )}
+            {controls.canSuspend &&
+              ["PARENT_AUTHORISED", "MANAGER_APPROVED", "ACTIVE", "SUSPENDED"].includes(
+                selected.status,
+              ) && (
+                <button
+                  type="button"
+                  onClick={() =>
+                    void lifecycle(
+                      "discontinue",
+                      "Discontinued following an authorised instruction.",
+                    )
+                  }
+                >
+                  Discontinue
+                </button>
+              )}
           </div>
 
           {controls.canAdminister && selected.status === "ACTIVE" && (
