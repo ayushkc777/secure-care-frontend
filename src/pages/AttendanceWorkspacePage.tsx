@@ -3,6 +3,11 @@ import { Link, useParams } from "react-router-dom";
 
 import { apiClient, mutateWithCsrf, safeApiMessage } from "../api/client";
 import { ErrorSummary } from "../components/auth/FormFeedback";
+import { ConfirmDialog } from "../components/feedback/ConfirmDialog";
+import { AlertBanner } from "../components/ui/AlertBanner";
+import { EmptyState } from "../components/ui/EmptyState";
+import { Skeleton } from "../components/ui/Skeleton";
+import { StatusBadge } from "../components/ui/StatusBadge";
 import { useAccess } from "../features/access/useAccess";
 import { attendanceControls, type AttendanceRecord } from "../features/attendance/attendance.types";
 import type { ChildSummary, Room } from "../features/childcare/childcare.types";
@@ -25,6 +30,14 @@ export function AttendanceWorkspacePage() {
   const [message, setMessage] = useState("");
   const [correctionReason, setCorrectionReason] = useState("");
   const [correctedStatus, setCorrectedStatus] = useState<AttendanceRecord["status"]>("EXPECTED");
+  const [loading, setLoading] = useState(true);
+  const [pendingAction, setPendingAction] = useState<{
+    record: AttendanceRecord;
+    name: string;
+    body: Record<string, unknown>;
+    title: string;
+    description: string;
+  } | null>(null);
 
   const load = useCallback(async () => {
     const attendance = await apiClient.get<{ attendance: AttendanceRecord[] }>(
@@ -48,6 +61,9 @@ export function AttendanceWorkspacePage() {
       .then(() => load())
       .catch((reason: unknown) => {
         if (current) setError(safeApiMessage(reason));
+      })
+      .finally(() => {
+        if (current) setLoading(false);
       });
     return () => {
       current = false;
@@ -121,6 +137,12 @@ export function AttendanceWorkspacePage() {
       (record) => record.status === "CHECKED_IN" && record.currentRoomId === room.id,
     ).length,
   }));
+  const childName = (record: AttendanceRecord) =>
+    children.find((child) => child.id === record.childId)?.displayName ??
+    (record.childId ? "Child attendance record" : "Lifecycle metadata");
+  const checkedIn = records.filter((record) => record.status === "CHECKED_IN").length;
+  const expected = records.filter((record) => record.status === "EXPECTED").length;
+  const late = records.filter((record) => record.lateArrival || record.latePickup).length;
 
   return (
     <section className="content-card" aria-labelledby="daily-attendance-title">
@@ -130,26 +152,78 @@ export function AttendanceWorkspacePage() {
         <Link to="/attendance">Available centres</Link>
       </nav>
       <ErrorSummary message={error} />
-      <p aria-live="polite">{message}</p>
-      <label htmlFor="attendance-date">Attendance date</label>
-      <input
-        id="attendance-date"
-        type="date"
-        value={date}
-        onChange={(event) => setDate(event.target.value)}
-      />
+      {message && (
+        <AlertBanner title="Attendance updated" tone="success">
+          {message}
+        </AlertBanner>
+      )}
+      <div className="attendance-toolbar">
+        <div>
+          <label htmlFor="attendance-date">Attendance date</label>
+          <input
+            id="attendance-date"
+            type="date"
+            value={date}
+            onChange={(event) => setDate(event.target.value)}
+          />
+        </div>
+        <dl className="attendance-totals" aria-label="Daily attendance totals">
+          <div>
+            <dt>Checked in</dt>
+            <dd>{checkedIn}</dd>
+          </div>
+          <div>
+            <dt>Expected</dt>
+            <dd>{expected}</dd>
+          </div>
+          <div>
+            <dt>Late flags</dt>
+            <dd>{late}</dd>
+          </div>
+        </dl>
+      </div>
 
       <h2 className="section-heading">Room headcount</h2>
-      <ul className="record-grid">
-        {headcounts.map(({ room, count }) => (
-          <li key={room.id}>
-            <h3>{room.name}</h3>
-            <p>
-              {count} of {room.capacity} children present
-            </p>
-          </li>
-        ))}
-      </ul>
+      {loading ? (
+        <Skeleton lines={3} />
+      ) : headcounts.length === 0 ? (
+        <EmptyState
+          title="No active rooms available"
+          description="Room headcounts will appear when rooms are available to this centre."
+        />
+      ) : (
+        <ul className="record-grid">
+          {headcounts.map(({ room, count }) => {
+            const percentage = Math.min(100, Math.round((count / room.capacity) * 100));
+            const capacityClass =
+              count >= room.capacity
+                ? "capacity-meter capacity-meter-full"
+                : percentage >= 80
+                  ? "capacity-meter capacity-meter-near"
+                  : "capacity-meter";
+            return (
+              <li key={room.id}>
+                <h3>{room.name}</h3>
+                <p>
+                  <strong>{count}</strong> of {room.capacity} children present
+                </p>
+                <div
+                  className={capacityClass}
+                  aria-label={`${percentage}% of room capacity used`}
+                  role="img"
+                >
+                  <span style={{ width: `${percentage}%` }} />
+                </div>
+                {percentage >= 80 && (
+                  <StatusBadge tone={count >= room.capacity ? "danger" : "warning"}>
+                    {count >= room.capacity ? "At capacity" : "Near capacity"}
+                  </StatusBadge>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      )}
 
       {controls.canManage && (
         <fieldset>
@@ -167,7 +241,12 @@ export function AttendanceWorkspacePage() {
               </option>
             ))}
           </select>
-          <button type="button" onClick={() => void createExpected()} disabled={!childId}>
+          <button
+            className="primary-button"
+            type="button"
+            onClick={() => void createExpected()}
+            disabled={!childId}
+          >
             Create expected record
           </button>
         </fieldset>
@@ -206,94 +285,156 @@ export function AttendanceWorkspacePage() {
           <p>Choose “Correct this record” below. A recent MFA step-up is required.</p>
         </fieldset>
       )}
-      {records.length === 0 ? (
-        <p>No attendance records for this date.</p>
+      {loading ? (
+        <Skeleton lines={4} />
+      ) : records.length === 0 ? (
+        <EmptyState
+          title="No attendance recorded"
+          description="There are no expected, present, absent or completed attendance records for this date."
+          icon="○"
+        />
       ) : (
         <ul className="record-grid">
           {records.map((record) => (
-            <li key={record.id}>
-              <h3>{record.childId ?? "Lifecycle metadata"}</h3>
-              <p>
-                {record.status.replaceAll("_", " ")}
-                {record.lateArrival ? " · Late arrival" : ""}
-                {record.latePickup ? " · Late pickup" : ""}
-              </p>
-              {controls.canManage && record.status === "EXPECTED" && (
-                <>
-                  <button
-                    type="button"
-                    onClick={() => void action(record, "check-in", { roomId: rooms[0]?.id })}
-                    disabled={rooms.length === 0}
-                  >
-                    Check in
-                  </button>
-                  <button type="button" onClick={() => void action(record, "absence", {})}>
-                    Record absence
-                  </button>
-                </>
+            <li className="attendance-record" data-status={record.status} key={record.id}>
+              <h3>{childName(record)}</h3>
+              <div className="status-row">
+                <StatusBadge status={record.status} />
+                {record.lateArrival && <StatusBadge tone="warning">Late arrival</StatusBadge>}
+                {record.latePickup && <StatusBadge tone="warning">Late pickup</StatusBadge>}
+              </div>
+              {(record.expectedArrivalAt || record.expectedDepartureAt) && (
+                <p className="record-meta">
+                  Expected{" "}
+                  {record.expectedArrivalAt
+                    ? new Date(record.expectedArrivalAt).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })
+                    : "—"}
+                  –
+                  {record.expectedDepartureAt
+                    ? new Date(record.expectedDepartureAt).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })
+                    : "—"}
+                </p>
               )}
-              {controls.canManage && record.status === "CHECKED_IN" && (
-                <>
-                  <button type="button" onClick={() => void action(record, "check-out", {})}>
-                    Check out
-                  </button>
+              <div className="table-actions">
+                {controls.canManage && record.status === "EXPECTED" && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => void action(record, "check-in", { roomId: rooms[0]?.id })}
+                      disabled={rooms.length === 0}
+                    >
+                      Check in
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setPendingAction({
+                          record,
+                          name: "absence",
+                          body: {},
+                          title: "Record this child as absent?",
+                          description: "This appends an absence event to the attendance lifecycle.",
+                        })
+                      }
+                    >
+                      Record absence
+                    </button>
+                  </>
+                )}
+                {controls.canManage && record.status === "CHECKED_IN" && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setPendingAction({
+                          record,
+                          name: "check-out",
+                          body: {},
+                          title: "Confirm checkout",
+                          description:
+                            "Confirm the authorised pickup process is complete before checking this child out.",
+                        })
+                      }
+                    >
+                      Check out
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        void action(record, "temporary-sign-out", {
+                          reason: "Supervised temporary departure",
+                        })
+                      }
+                    >
+                      Temporary sign-out
+                    </button>
+                    {rooms.map(
+                      (room) =>
+                        room.id !== record.currentRoomId && (
+                          <button
+                            key={room.id}
+                            type="button"
+                            onClick={() =>
+                              void action(record, "transfer", {
+                                destinationRoomId: room.id,
+                                reason: "Planned room movement",
+                              })
+                            }
+                          >
+                            Move to {room.name}
+                          </button>
+                        ),
+                    )}
+                  </>
+                )}
+                {controls.canManage && record.status === "TEMPORARILY_OUT" && (
                   <button
                     type="button"
                     onClick={() =>
-                      void action(record, "temporary-sign-out", {
-                        reason: "Supervised temporary departure",
+                      void action(record, "return", {
+                        destinationRoomId: rooms[0]?.id,
+                        reason: "Returned to centre",
                       })
                     }
+                    disabled={rooms.length === 0}
                   >
-                    Temporary sign-out
+                    Record return
                   </button>
-                  {rooms.map(
-                    (room) =>
-                      room.id !== record.currentRoomId && (
-                        <button
-                          key={room.id}
-                          type="button"
-                          onClick={() =>
-                            void action(record, "transfer", {
-                              destinationRoomId: room.id,
-                              reason: "Planned room movement",
-                            })
-                          }
-                        >
-                          Move to {room.name}
-                        </button>
-                      ),
-                  )}
-                </>
-              )}
-              {controls.canManage && record.status === "TEMPORARILY_OUT" && (
-                <button
-                  type="button"
-                  onClick={() =>
-                    void action(record, "return", {
-                      destinationRoomId: rooms[0]?.id,
-                      reason: "Returned to centre",
-                    })
-                  }
-                  disabled={rooms.length === 0}
-                >
-                  Record return
-                </button>
-              )}
-              {record.childId && controls.canReadHistory && (
-                <Link to={`/attendance/centres/${centreId}/children/${record.childId}`}>
-                  View history
-                </Link>
-              )}
-              {controls.canCorrect && (
-                <button type="button" onClick={() => void correct(record)}>
-                  Correct this record
-                </button>
-              )}
+                )}
+                {record.childId && controls.canReadHistory && (
+                  <Link to={`/attendance/centres/${centreId}/children/${record.childId}`}>
+                    View history
+                  </Link>
+                )}
+                {controls.canCorrect && (
+                  <button type="button" onClick={() => void correct(record)}>
+                    Correct this record
+                  </button>
+                )}
+              </div>
             </li>
           ))}
         </ul>
       )}
+      <ConfirmDialog
+        open={pendingAction !== null}
+        title={pendingAction?.title ?? "Confirm attendance action"}
+        description={pendingAction?.description ?? ""}
+        confirmLabel="Confirm action"
+        onCancel={() => setPendingAction(null)}
+        onConfirm={() => {
+          if (pendingAction === null) return;
+          const value = pendingAction;
+          setPendingAction(null);
+          void action(value.record, value.name, value.body);
+        }}
+      />
     </section>
   );
 }

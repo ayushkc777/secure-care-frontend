@@ -8,9 +8,9 @@ export function AppNavigation() {
   const navigationItems =
     state.status === "ready"
       ? [
-          { label: "Home", to: "/" },
-          { label: "Session", to: "/session" },
+          { label: "Overview", to: "/dashboard" },
           ...visibleAccessNavigation(state.access),
+          { label: "Session & MFA", to: "/session" },
         ]
       : state.status === "restricted"
         ? [
@@ -25,7 +25,7 @@ export function AppNavigation() {
           ];
 
   return (
-    <nav aria-label="Primary navigation">
+    <nav className="primary-navigation" id="primary-navigation" aria-label="Primary navigation">
       <ul className="navigation-list">
         {navigationItems.map((item) => (
           <li key={item.to}>
@@ -36,6 +36,7 @@ export function AppNavigation() {
               end={item.to === "/"}
               to={item.to}
             >
+              <span className="navigation-dot" aria-hidden="true" />
               {item.label}
             </NavLink>
           </li>

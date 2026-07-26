@@ -16,14 +16,31 @@ export function ConfirmDialog({
   onConfirm: () => void;
 }) {
   const cancelRef = useRef<HTMLButtonElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
   useEffect(() => {
-    if (open) cancelRef.current?.focus();
-  }, [open]);
+    if (!open) return;
+    previousFocusRef.current =
+      document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    cancelRef.current?.focus();
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onCancel();
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      previousFocusRef.current?.focus();
+    };
+  }, [onCancel, open]);
   if (!open) return null;
   return (
     <div className="dialog-backdrop">
-      <section aria-describedby="confirmation-description" aria-modal="true" role="alertdialog">
-        <h2>{title}</h2>
+      <section
+        aria-describedby="confirmation-description"
+        aria-labelledby="confirmation-title"
+        aria-modal="true"
+        role="alertdialog"
+      >
+        <h2 id="confirmation-title">{title}</h2>
         <p id="confirmation-description">{description}</p>
         <div className="table-actions">
           <button className="secondary-button" onClick={onCancel} ref={cancelRef} type="button">

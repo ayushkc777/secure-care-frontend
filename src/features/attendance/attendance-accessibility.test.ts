@@ -12,4 +12,16 @@ describe("attendance accessibility", () => {
     expect(source).toMatch(/aria-labelledby=/u);
     expect(source).toMatch(/<h1/u);
   });
+
+  test("daily operations expose statuses, loading and confirmation states", () => {
+    const source = readFileSync(
+      new URL("../../pages/AttendanceWorkspacePage.tsx", import.meta.url),
+      "utf8",
+    );
+    expect(source).toContain("<StatusBadge");
+    expect(source).toContain("<Skeleton");
+    expect(source).toContain("<EmptyState");
+    expect(source).toContain("<ConfirmDialog");
+    expect(source).toContain("<AlertBanner");
+  });
 });

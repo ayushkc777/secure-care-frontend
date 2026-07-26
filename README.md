@@ -29,6 +29,14 @@ npm test
 npm run build
 ```
 
+## Interface system
+
+The application uses a local SecureCare design system rather than a dashboard framework.
+The responsive role-aware shell, operational states, accessibility decisions and security
+boundaries are documented in
+[`docs/design/design-system.md`](docs/design/design-system.md). The findings that motivated
+the redesign are recorded in [`docs/design/ui-ux-audit.md`](docs/design/ui-ux-audit.md).
+
 Phase 8 adds a role-aware pickup workspace. Parents can manage authorisations and reveal
 a newly generated code once. Educators can verify and complete an authorised pickup.
 Managers and Administrators with the separate override permission can record an

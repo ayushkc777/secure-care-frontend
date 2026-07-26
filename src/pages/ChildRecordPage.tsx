@@ -6,6 +6,9 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { apiClient, mutateWithCsrf, safeApiMessage } from "../api/client";
 import { ErrorSummary, FieldError } from "../components/auth/FormFeedback";
 import { ConfirmDialog } from "../components/feedback/ConfirmDialog";
+import { EmptyState } from "../components/ui/EmptyState";
+import { Skeleton } from "../components/ui/Skeleton";
+import { StatusBadge } from "../components/ui/StatusBadge";
 import { hasPermission } from "../features/access/access-policy";
 import { useAccess } from "../features/access/useAccess";
 import {
@@ -47,6 +50,12 @@ export function ChildRecordPage() {
   const canReadAttendance =
     readyAccess !== null && hasPermission(readyAccess, "attendance.history.read", centreId);
   const canReadHealth = readyAccess !== null && hasPermission(readyAccess, "health.read", centreId);
+  const canReadPickup =
+    readyAccess !== null && hasPermission(readyAccess, "pickup_authorisation.read", centreId);
+  const canReadIncidents =
+    readyAccess !== null && hasPermission(readyAccess, "incident.history.read", centreId);
+  const canReadSafeguarding =
+    readyAccess !== null && hasPermission(readyAccess, "safeguarding.read", centreId);
 
   const childForm = useForm<ChildForm>({ resolver: zodResolver(childFormSchema) });
   const relationshipForm = useForm<RelationshipForm>({
@@ -201,19 +210,28 @@ export function ChildRecordPage() {
       <p className="eyebrow">Sensitive childcare record</p>
       <h1 id="child-record-title">{child?.displayName ?? "Loading child record"}</h1>
       <p>Only fields authorised for your current role are returned by the server.</p>
-      {canReadAttendance && (
-        <Link to={`/attendance/centres/${centreId}/children/${childId}`}>
-          View attendance history
-        </Link>
-      )}
-      {canReadHealth && (
-        <Link to={`/health/centres/${centreId}/children/${childId}`}>
-          View health and medication record
-        </Link>
-      )}
+      <nav className="section-navigation child-workspace-tabs" aria-label="Child record sections">
+        <a href="#child-overview">Overview</a>
+        {canReadRelationships && <a href="#parent-relationships">Parent relationships</a>}
+        {canReadPickup && (
+          <Link to={`/pickup/centres/${centreId}/children/${childId}`}>Authorised pickup</Link>
+        )}
+        {canReadAttendance && (
+          <Link to={`/attendance/centres/${centreId}/children/${childId}`}>Attendance</Link>
+        )}
+        {canReadIncidents && <Link to={`/incidents/centres/${centreId}`}>Incidents</Link>}
+        {canReadSafeguarding && (
+          <Link to={`/incidents/centres/${centreId}/safeguarding`}>Safeguarding</Link>
+        )}
+        {canReadHealth && (
+          <Link to={`/health/centres/${centreId}/children/${childId}`}>Health and medication</Link>
+        )}
+      </nav>
       <ErrorSummary message={requestError} />
-      {child !== null && (
-        <dl className="detail-list">
+      {child === null ? (
+        <Skeleton lines={4} />
+      ) : (
+        <dl className="detail-list" id="child-overview">
           <div>
             <dt>Date of birth</dt>
             <dd>{child.dateOfBirth ?? "Not recorded"}</dd>
@@ -260,15 +278,20 @@ export function ChildRecordPage() {
 
       {canReadRelationships && (
         <>
-          <h2 className="section-heading">Parents and guardians</h2>
+          <h2 className="section-heading" id="parent-relationships">
+            Parents and guardians
+          </h2>
           {relationships.length === 0 ? (
-            <p>No active relationships are visible.</p>
+            <EmptyState
+              title="No active relationships"
+              description="No parent or guardian relationship is visible to your current role."
+            />
           ) : (
             <ul className="metadata-list">
               {relationships.map((relationship) => (
                 <li key={relationship.id}>
                   <strong>{relationship.relationshipType.replaceAll("_", " ")}</strong>
-                  <span>{relationship.status}</span>
+                  <StatusBadge status={relationship.status} />
                   {canManageRelationships && (
                     <button
                       className="danger-button"
