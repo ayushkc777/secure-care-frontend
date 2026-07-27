@@ -89,6 +89,6 @@ permissions and cross-origin isolation headers. TLS/HSTS remain deployment-edge
 responsibilities and are completed in the production-readiness guidance.
 
 Phase 15 lazy-loads every route. The production entry JavaScript decreased from
-627.18 kB (182.82 kB gzip) to 422.92 kB (132.21 kB gzip); route code is emitted in
+627.18 kB (182.82 kB gzip) to approximately 425 kB (133 kB gzip); route code is emitted in
 separate chunks and the previous 500 kB warning is gone. The production Nginx image exposes
 the API through same-origin proxy paths and allows no development API origin in its CSP.
