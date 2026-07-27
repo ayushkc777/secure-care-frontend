@@ -25,7 +25,7 @@ export function DashboardPage() {
     if (access.status !== "ready") return;
     let current = true;
     void apiClient
-      .get<{ centres: Centre[] }>("/api/v1/centres")
+      .get<{ centres: Centre[] }>("/centres")
       .then(async ({ data }) => {
         const today = new Date().toISOString().slice(0, 10);
         const attendanceCentres = data.centres.filter((centre) =>
@@ -39,16 +39,14 @@ export function DashboardPage() {
         const attendanceResults = await Promise.allSettled(
           attendanceCentres.map((centre) =>
             apiClient.get<{ totals: Record<string, number> }>(
-              `/api/v1/centres/${centre.id}/attendance/overview`,
+              `/centres/${centre.id}/attendance/overview`,
               { params: { date: today } },
             ),
           ),
         );
         const incidentResults = await Promise.allSettled(
           incidentCentres.map((centre) =>
-            apiClient.get<{ incidents: { status: string }[] }>(
-              `/api/v1/centres/${centre.id}/incidents`,
-            ),
+            apiClient.get<{ incidents: { status: string }[] }>(`/centres/${centre.id}/incidents`),
           ),
         );
         const attendanceValues = attendanceResults.flatMap((result) =>

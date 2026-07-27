@@ -13,7 +13,7 @@ export function HealthChildrenPage() {
   useEffect(() => {
     let current = true;
     void apiClient
-      .get<{ children: ChildSummary[] }>(`/api/v1/centres/${centreId}/children`)
+      .get<{ children: ChildSummary[] }>(`/centres/${centreId}/children`)
       .then(({ data }) => current && setChildren(data.children))
       .catch((reason: unknown) => current && setError(safeApiMessage(reason)));
     return () => {

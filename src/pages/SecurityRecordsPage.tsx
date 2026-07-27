@@ -39,14 +39,14 @@ export function SecurityRecordsPage() {
     if (permissions.includes(Permission.AuditRead)) {
       requests.push(
         apiClient
-          .get<{ events: AuditMetadata[] }>(`/api/v1/centres/${centreId}/security/audit-events`)
+          .get<{ events: AuditMetadata[] }>(`/centres/${centreId}/security/audit-events`)
           .then(({ data }) => setEvents(data.events)),
       );
     }
     if (permissions.includes(Permission.SecurityAlertRead)) {
       requests.push(
         apiClient
-          .get<{ alerts: AlertMetadata[] }>(`/api/v1/centres/${centreId}/security/alerts`)
+          .get<{ alerts: AlertMetadata[] }>(`/centres/${centreId}/security/alerts`)
           .then(({ data }) => setAlerts(data.alerts)),
       );
     }

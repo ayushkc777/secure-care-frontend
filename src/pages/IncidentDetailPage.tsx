@@ -78,7 +78,7 @@ export function IncidentDetailPage() {
 
   const load = useCallback(async () => {
     const detail = await apiClient.get<{ incident: Incident }>(
-      `/api/v1/centres/${centreId}/incidents/${incidentId}`,
+      `/centres/${centreId}/incidents/${incidentId}`,
     );
     setIncident(detail.data.incident);
     updateForm.reset({
@@ -88,7 +88,7 @@ export function IncidentDetailPage() {
     });
     if (controls.canReadHistory) {
       const historyResponse = await apiClient.get<{ history: Revision[] }>(
-        `/api/v1/centres/${centreId}/incidents/${incidentId}/history`,
+        `/centres/${centreId}/incidents/${incidentId}/history`,
       );
       setHistory(historyResponse.data.history);
     }
@@ -113,7 +113,7 @@ export function IncidentDetailPage() {
     if (incident?.version === undefined) return;
     setRequestError(null);
     try {
-      await mutateWithCsrf("post", `/api/v1/centres/${centreId}/incidents/${incidentId}/${name}`, {
+      await mutateWithCsrf("post", `/centres/${centreId}/incidents/${incidentId}/${name}`, {
         version: incident.version,
         ...body,
       });
@@ -127,7 +127,7 @@ export function IncidentDetailPage() {
   const updateDraft = updateForm.handleSubmit(async (values) => {
     if (incident?.version === undefined) return;
     try {
-      await mutateWithCsrf("patch", `/api/v1/centres/${centreId}/incidents/${incidentId}`, {
+      await mutateWithCsrf("patch", `/centres/${centreId}/incidents/${incidentId}`, {
         ...values,
         version: incident.version,
       });
@@ -143,7 +143,7 @@ export function IncidentDetailPage() {
     try {
       await mutateWithCsrf(
         "post",
-        `/api/v1/centres/${centreId}/children/${incident.childId}/incidents/${incidentId}/acknowledge`,
+        `/centres/${centreId}/children/${incident.childId}/incidents/${incidentId}/acknowledge`,
         { status: "ACKNOWLEDGED", comment: values.comment || null },
       );
       setStatusMessage("Receipt acknowledged. This records receipt, not agreement.");
@@ -156,18 +156,14 @@ export function IncidentDetailPage() {
   const amend = amendmentForm.handleSubmit(async (values) => {
     if (incident?.version === undefined) return;
     try {
-      await mutateWithCsrf(
-        "post",
-        `/api/v1/centres/${centreId}/incidents/${incidentId}/amendments`,
-        {
-          version: incident.version,
-          type: "CORRECTION",
-          reason: values.reason,
-          content: values.content,
-          changedFields: [values.changedField],
-          parentVisible: values.parentVisible,
-        },
-      );
+      await mutateWithCsrf("post", `/centres/${centreId}/incidents/${incidentId}/amendments`, {
+        version: incident.version,
+        type: "CORRECTION",
+        reason: values.reason,
+        content: values.content,
+        changedFields: [values.changedField],
+        parentVisible: values.parentVisible,
+      });
       amendmentForm.reset();
       setStatusMessage("Append-only amendment recorded.");
       await load();

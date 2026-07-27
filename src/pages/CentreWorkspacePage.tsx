@@ -27,7 +27,7 @@ export function CentreWorkspacePage() {
   useEffect(() => {
     let current = true;
     void apiClient
-      .get<{ centre: Centre }>(`/api/v1/centres/${centreId}`)
+      .get<{ centre: Centre }>(`/centres/${centreId}`)
       .then(({ data }) => {
         if (!current) return;
         setCentre(data.centre);
@@ -49,11 +49,10 @@ export function CentreWorkspacePage() {
     if (centre === null) return;
     setRequestError(null);
     try {
-      const data = await mutateWithCsrf<{ centre: Centre }>(
-        "patch",
-        `/api/v1/centres/${centreId}`,
-        { ...values, version: centre.version },
-      );
+      const data = await mutateWithCsrf<{ centre: Centre }>("patch", `/centres/${centreId}`, {
+        ...values,
+        version: centre.version,
+      });
       setCentre(data.centre);
     } catch (error) {
       setRequestError(safeApiMessage(error));

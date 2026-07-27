@@ -91,13 +91,13 @@ export function PickupWorkspacePage() {
 
   const load = useCallback(async () => {
     const requests = [
-      apiClient.get<{ child: ChildSummary }>(`/api/v1/centres/${centreId}/children/${childId}`),
+      apiClient.get<{ child: ChildSummary }>(`/centres/${centreId}/children/${childId}`),
       apiClient.get<{
         authorisations: PickupAuthorisation[];
         pagination: Pagination;
-      }>(`/api/v1/centres/${centreId}/children/${childId}/pickup-authorisations`),
+      }>(`/centres/${centreId}/children/${childId}/pickup-authorisations`),
       apiClient.get<{ pickups: PickupHistoryEntry[]; pagination: Pagination }>(
-        `/api/v1/centres/${centreId}/children/${childId}/pickup-history`,
+        `/centres/${centreId}/children/${childId}/pickup-history`,
       ),
     ] as const;
     const [childResponse, authorisationResponse, historyResponse] = await Promise.all(requests);
@@ -132,7 +132,7 @@ export function PickupWorkspacePage() {
       let ownerParentUserId: string | undefined;
       if (permissions.canVerify) {
         const lookup = await apiClient.get<{ parents: { userId: string }[] }>(
-          `/api/v1/centres/${centreId}/eligible-parents`,
+          `/centres/${centreId}/eligible-parents`,
           { params: { query: values.ownerParentEmail } },
         );
         ownerParentUserId = lookup.data.parents[0]?.userId;
@@ -143,7 +143,7 @@ export function PickupWorkspacePage() {
       }
       await mutateWithCsrf(
         "post",
-        `/api/v1/centres/${centreId}/children/${childId}/pickup-authorisations`,
+        `/centres/${centreId}/children/${childId}/pickup-authorisations`,
         {
           ...(ownerParentUserId === undefined ? {} : { ownerParentUserId }),
           pickupPerson: {
@@ -181,7 +181,7 @@ export function PickupWorkspacePage() {
     try {
       await mutateWithCsrf(
         "patch",
-        `/api/v1/centres/${centreId}/children/${childId}/pickup-authorisations/${editing.id}`,
+        `/centres/${centreId}/children/${childId}/pickup-authorisations/${editing.id}`,
         {
           validFrom: serverDateTime(values.validFrom),
           validUntil: serverDateTime(values.validUntil),
@@ -202,7 +202,7 @@ export function PickupWorkspacePage() {
     try {
       await mutateWithCsrf(
         "post",
-        `/api/v1/centres/${centreId}/children/${childId}/pickup-authorisations/${revoking.id}/revoke`,
+        `/centres/${centreId}/children/${childId}/pickup-authorisations/${revoking.id}/revoke`,
         { reasonCode: "PARENT_REQUEST", version: revoking.version },
       );
       setRevoking(null);
@@ -222,7 +222,7 @@ export function PickupWorkspacePage() {
         challenge: RevealedCode & { verificationId: string };
       }>(
         "post",
-        `/api/v1/centres/${centreId}/children/${childId}/pickup-authorisations/${authorisation.id}/code`,
+        `/centres/${centreId}/children/${childId}/pickup-authorisations/${authorisation.id}/code`,
       );
       setRevealedCode({ code: response.challenge.code, expiresAt: response.challenge.expiresAt });
       setStatusMessage("A new one-time code was generated. Any previous code is invalid.");
@@ -238,7 +238,7 @@ export function PickupWorkspacePage() {
     try {
       const response = await mutateWithCsrf<{ verification: PickupVerification }>(
         "post",
-        `/api/v1/centres/${centreId}/children/${childId}/pickup/verify`,
+        `/centres/${centreId}/children/${childId}/pickup/verify`,
         values,
       );
       setVerification(response.verification);
@@ -251,11 +251,9 @@ export function PickupWorkspacePage() {
   async function completePickup() {
     if (verification === null) return;
     try {
-      await mutateWithCsrf(
-        "post",
-        `/api/v1/centres/${centreId}/children/${childId}/pickup/complete`,
-        { verificationId: verification.verificationId },
-      );
+      await mutateWithCsrf("post", `/centres/${centreId}/children/${childId}/pickup/complete`, {
+        verificationId: verification.verificationId,
+      });
       setVerification(null);
       verificationForm.reset();
       setStatusMessage("Authorised pickup completed.");
@@ -270,7 +268,7 @@ export function PickupWorkspacePage() {
     try {
       await mutateWithCsrf(
         "post",
-        `/api/v1/centres/${centreId}/children/${childId}/pickup/emergency-override`,
+        `/centres/${centreId}/children/${childId}/pickup/emergency-override`,
         values,
       );
       overrideForm.reset();

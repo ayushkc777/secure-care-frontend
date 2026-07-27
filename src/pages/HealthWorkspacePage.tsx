@@ -106,17 +106,17 @@ export function HealthWorkspacePage() {
   const load = useCallback(async () => {
     const [profileResponse, medicationResponse] = await Promise.all([
       apiClient.get<{ healthProfile: HealthProfile | null }>(
-        `/api/v1/centres/${centreId}/children/${childId}/health`,
+        `/centres/${centreId}/children/${childId}/health`,
       ),
       apiClient.get<{ medications: Medication[] }>(
-        `/api/v1/centres/${centreId}/children/${childId}/medications`,
+        `/centres/${centreId}/children/${childId}/medications`,
       ),
     ]);
     setProfile(profileResponse.data.healthProfile);
     setMedications(medicationResponse.data.medications);
     if (selectedId !== null) {
       const detail = await apiClient.get<{ medication: Medication }>(
-        `/api/v1/centres/${centreId}/children/${childId}/medications/${selectedId}`,
+        `/centres/${centreId}/children/${childId}/medications/${selectedId}`,
       );
       setMedications((items) =>
         items.map((item) => (item.id === selectedId ? detail.data.medication : item)),
@@ -152,7 +152,7 @@ export function HealthWorkspacePage() {
 
   const saveProfile = profileForm.handleSubmit(async (values) => {
     try {
-      await mutateWithCsrf("put", `/api/v1/centres/${centreId}/children/${childId}/health`, {
+      await mutateWithCsrf("put", `/centres/${centreId}/children/${childId}/health`, {
         allergySeverity: values.allergySeverity,
         allergies: optional(values.allergies),
         allergyTriggers: optional(values.allergyTriggers),
@@ -177,7 +177,7 @@ export function HealthWorkspacePage() {
     try {
       const response = await mutateWithCsrf<{ medication: Medication }>(
         "post",
-        `/api/v1/centres/${centreId}/children/${childId}/medications`,
+        `/centres/${centreId}/children/${childId}/medications`,
         {
           ...values,
           validFrom: serverTimestamp(values.validFrom),
@@ -207,7 +207,7 @@ export function HealthWorkspacePage() {
     try {
       await mutateWithCsrf(
         "post",
-        `/api/v1/centres/${centreId}/children/${childId}/medications/${selected.id}/${action}`,
+        `/centres/${centreId}/children/${childId}/medications/${selected.id}/${action}`,
         { version: selected.version, ...(reason === undefined ? {} : { reason }) },
       );
       setStatusMessage(`Medication ${action.replaceAll("-", " ")} recorded.`);
@@ -222,7 +222,7 @@ export function HealthWorkspacePage() {
     try {
       await mutateWithCsrf(
         "post",
-        `/api/v1/centres/${centreId}/children/${childId}/medications/${selected.id}/administrations`,
+        `/centres/${centreId}/children/${childId}/medications/${selected.id}/administrations`,
         {
           ...values,
           version: selected.version,
@@ -246,7 +246,7 @@ export function HealthWorkspacePage() {
     try {
       await mutateWithCsrf(
         "post",
-        `/api/v1/centres/${centreId}/children/${childId}/medications/${selected.id}/amendments`,
+        `/centres/${centreId}/children/${childId}/medications/${selected.id}/amendments`,
         { ...values, medicationError: false, version: selected.version },
       );
       amendmentForm.reset();
@@ -268,7 +268,7 @@ export function HealthWorkspacePage() {
     try {
       await mutateWithCsrf(
         "post",
-        `/api/v1/centres/${centreId}/children/${childId}/medications/${selected.id}/administrations/${administrationId}/amendments`,
+        `/centres/${centreId}/children/${childId}/medications/${selected.id}/administrations/${administrationId}/amendments`,
         { ...parsed.data, version },
       );
       amendmentForm.reset();

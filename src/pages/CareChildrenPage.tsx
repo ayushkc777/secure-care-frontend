@@ -29,7 +29,7 @@ export function CareChildrenPage() {
 
   const load = useCallback(async () => {
     const { data } = await apiClient.get<{ children: ChildSummary[] }>(
-      `/api/v1/centres/${centreId}/children`,
+      `/centres/${centreId}/children`,
     );
     setChildren(data.children);
   }, [centreId]);
@@ -37,7 +37,7 @@ export function CareChildrenPage() {
   useEffect(() => {
     let current = true;
     void apiClient
-      .get<{ children: ChildSummary[] }>(`/api/v1/centres/${centreId}/children`)
+      .get<{ children: ChildSummary[] }>(`/centres/${centreId}/children`)
       .then(({ data }) => {
         if (current) setChildren(data.children);
       })
@@ -52,7 +52,7 @@ export function CareChildrenPage() {
   const submit = handleSubmit(async (values) => {
     setRequestError(null);
     try {
-      await mutateWithCsrf("post", `/api/v1/centres/${centreId}/children`, {
+      await mutateWithCsrf("post", `/centres/${centreId}/children`, {
         ...values,
         preferredName: values.preferredName || null,
         careNotes: values.careNotes || null,

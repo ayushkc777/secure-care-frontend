@@ -27,8 +27,8 @@ export function RoleAssignmentsPage({ platform = false }: { platform?: boolean }
     [access],
   );
   const endpoint = platform
-    ? "/api/v1/platform/role-assignments"
-    : `/api/v1/centres/${centreId ?? ""}/role-assignments`;
+    ? "/platform/role-assignments"
+    : `/centres/${centreId ?? ""}/role-assignments`;
 
   const centreForm = useForm<RoleAssignmentForm>({
     resolver: zodResolver(roleAssignmentFormSchema(permittedRoles)),
@@ -175,7 +175,12 @@ export function RoleAssignmentsPage({ platform = false }: { platform?: boolean }
         </button>
       </form>
 
-      <div className="responsive-table" tabIndex={0}>
+      <div
+        aria-label="Scrollable role assignments"
+        className="responsive-table"
+        role="region"
+        tabIndex={0}
+      >
         <table>
           <caption>Current non-deleted role assignments</caption>
           <thead>

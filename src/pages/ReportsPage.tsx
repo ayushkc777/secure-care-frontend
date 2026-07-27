@@ -26,7 +26,7 @@ export function ReportsPage() {
     if (access.status !== "ready") return;
     let current = true;
     void apiClient
-      .get<{ centres: Centre[] }>("/api/v1/centres")
+      .get<{ centres: Centre[] }>("/centres")
       .then(({ data }) => {
         if (current) {
           setCentres(
@@ -54,7 +54,7 @@ export function ReportsPage() {
     setError(null);
     try {
       const { data } = await apiClient.get<ReportResponse>(
-        `/api/v1/platform/reports/centre-comparison?${comparisonQuery().toString()}`,
+        `/platform/reports/centre-comparison?${comparisonQuery().toString()}`,
       );
       setComparison(data);
       setStatus(`Comparison generated for ${data.rows.length} centres.`);
@@ -67,7 +67,7 @@ export function ReportsPage() {
     setError(null);
     try {
       const response = await apiClient.get<Blob>(
-        `/api/v1/platform/reports/centre-comparison/export.csv?${comparisonQuery().toString()}`,
+        `/platform/reports/centre-comparison/export.csv?${comparisonQuery().toString()}`,
         { responseType: "blob" },
       );
       const url = URL.createObjectURL(response.data);

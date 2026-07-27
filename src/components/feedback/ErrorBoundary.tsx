@@ -1,5 +1,7 @@
 import { Component, type ErrorInfo, type ReactNode } from "react";
 
+import { reportSafeError } from "../../observability/error-reporter";
+
 type ErrorBoundaryProps = {
   children: ReactNode;
 };
@@ -18,7 +20,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   }
 
   public componentDidCatch(_error: Error, _errorInfo: ErrorInfo): void {
-    // A production error-reporting adapter will be added in a later approved phase.
+    reportSafeError("render");
   }
 
   public render(): ReactNode {

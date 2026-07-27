@@ -17,7 +17,7 @@ export function AttendanceHistoryPage() {
     let current = true;
     void apiClient
       .get<{ attendance: AttendanceRecord[] }>(
-        `/api/v1/centres/${centreId}/children/${childId}/attendance`,
+        `/centres/${centreId}/children/${childId}/attendance`,
       )
       .then(({ data }) => current && setRecords(data.attendance))
       .catch((reason: unknown) => current && setError(safeApiMessage(reason)))

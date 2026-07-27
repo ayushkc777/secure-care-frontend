@@ -26,7 +26,7 @@ export function MfaVerifyPage() {
   const submit = handleSubmit(async ({ code }) => {
     setRequestError(null);
     try {
-      await postWithCsrf("/api/v1/auth/mfa/verify", { challengeToken, code });
+      await postWithCsrf("/auth/mfa/verify", { challengeToken, code });
       clearChallenge();
       await refresh();
       void navigate("/session");

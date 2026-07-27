@@ -25,7 +25,7 @@ export function StepUpPage() {
   const submit = handleSubmit(async (values) => {
     setRequestError(null);
     try {
-      await postWithCsrf("/api/v1/auth/step-up", values);
+      await postWithCsrf("/auth/step-up", values);
       void navigate("/mfa/manage");
     } catch (error) {
       setRequestError(safeApiMessage(error));

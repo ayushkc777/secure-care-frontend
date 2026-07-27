@@ -26,16 +26,14 @@ export function CareIndexPage() {
   });
 
   async function load() {
-    const { data } = await apiClient.get<{ centres: Centre[]; pagination: Pagination }>(
-      "/api/v1/centres",
-    );
+    const { data } = await apiClient.get<{ centres: Centre[]; pagination: Pagination }>("/centres");
     setCentres(data.centres);
   }
 
   useEffect(() => {
     let current = true;
     void apiClient
-      .get<{ centres: Centre[] }>("/api/v1/centres")
+      .get<{ centres: Centre[] }>("/centres")
       .then(({ data }) => {
         if (current) setCentres(data.centres);
       })
@@ -50,7 +48,7 @@ export function CareIndexPage() {
   const submit = handleSubmit(async (values) => {
     setRequestError(null);
     try {
-      await mutateWithCsrf("post", "/api/v1/centres", values);
+      await mutateWithCsrf("post", "/centres", values);
       reset({ name: "", slug: "", timezone: "Europe/London" });
       await load();
     } catch (error) {

@@ -10,7 +10,7 @@ export function AccessProvider({ children }: { children: ReactNode }) {
 
   const refresh = useCallback(async () => {
     try {
-      const { data } = await apiClient.get<CurrentAccess>("/api/v1/authorisation/me");
+      const { data } = await apiClient.get<CurrentAccess>("/authorisation/me");
       setState({ status: "ready", access: data });
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.status === 401) {
@@ -26,7 +26,7 @@ export function AccessProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let current = true;
     void apiClient
-      .get<CurrentAccess>("/api/v1/authorisation/me")
+      .get<CurrentAccess>("/authorisation/me")
       .then(({ data }) => {
         if (current) setState({ status: "ready", access: data });
       })

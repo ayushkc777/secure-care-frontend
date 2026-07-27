@@ -43,10 +43,10 @@ export function NotificationWorkspacePage() {
 
   const load = useCallback(async () => {
     const [notificationsResponse, preferenceResponse] = await Promise.all([
-      apiClient.get<{ notifications: Notification[] }>(`/api/v1/centres/${centreId}/notifications`),
+      apiClient.get<{ notifications: Notification[] }>(`/centres/${centreId}/notifications`),
       controls.canManagePreferences
         ? apiClient.get<{ preferences: NotificationPreference[] }>(
-            `/api/v1/centres/${centreId}/notification-preferences`,
+            `/centres/${centreId}/notification-preferences`,
           )
         : Promise.resolve({ data: { preferences: [] } }),
     ]);
@@ -69,7 +69,7 @@ export function NotificationWorkspacePage() {
     try {
       await mutateWithCsrf(
         "post",
-        `/api/v1/centres/${centreId}/notifications/${notificationId}/${action}`,
+        `/centres/${centreId}/notifications/${notificationId}/${action}`,
         {},
       );
       setStatus(`Notification marked ${action === "read" ? "read" : "dismissed"}.`);
@@ -84,7 +84,7 @@ export function NotificationWorkspacePage() {
     const existing = preferences.find(({ type }) => type === selectedType);
     setError(null);
     try {
-      await mutateWithCsrf("put", `/api/v1/centres/${centreId}/notification-preferences`, {
+      await mutateWithCsrf("put", `/centres/${centreId}/notification-preferences`, {
         type: selectedType,
         inAppEnabled: enabled,
         emailEnabled: false,

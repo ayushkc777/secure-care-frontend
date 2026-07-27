@@ -98,6 +98,7 @@ export function AppShell() {
               <div className="profile-menu-panel">
                 <Link to="/access">My access</Link>
                 <Link to="/session">Session security</Link>
+                <Link to="/change-password">Change password</Link>
                 <Link to="/mfa/manage">Manage MFA</Link>
               </div>
             </details>

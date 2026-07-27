@@ -73,7 +73,7 @@ export function ChildRecordPage() {
 
   const load = useCallback(async () => {
     const childResponse = await apiClient.get<{ child: ChildDetails }>(
-      `/api/v1/centres/${centreId}/children/${childId}`,
+      `/centres/${centreId}/children/${childId}`,
     );
     setChild(childResponse.data.child);
     childForm.reset({
@@ -87,15 +87,13 @@ export function ChildRecordPage() {
     });
     if (canReadRelationships) {
       const response = await apiClient.get<{ relationships: ParentRelationship[] }>(
-        `/api/v1/centres/${centreId}/children/${childId}/relationships`,
+        `/centres/${centreId}/children/${childId}/relationships`,
       );
       setRelationships(response.data.relationships);
     }
     const [roomResponse, enrolmentResponse] = await Promise.all([
-      apiClient.get<{ rooms: Room[] }>(`/api/v1/centres/${centreId}/rooms`),
-      apiClient.get<{ enrolment: Enrolment }>(
-        `/api/v1/centres/${centreId}/children/${childId}/enrolment`,
-      ),
+      apiClient.get<{ rooms: Room[] }>(`/centres/${centreId}/rooms`),
+      apiClient.get<{ enrolment: Enrolment }>(`/centres/${centreId}/children/${childId}/enrolment`),
     ]);
     setRooms(roomResponse.data.rooms);
     setEnrolment(enrolmentResponse.data.enrolment);
@@ -114,7 +112,7 @@ export function ChildRecordPage() {
     if (child === null) return;
     setRequestError(null);
     try {
-      await mutateWithCsrf("patch", `/api/v1/centres/${centreId}/children/${childId}`, {
+      await mutateWithCsrf("patch", `/centres/${centreId}/children/${childId}`, {
         ...values,
         preferredName: values.preferredName || null,
         careNotes: values.careNotes || null,
@@ -131,7 +129,7 @@ export function ChildRecordPage() {
     setRequestError(null);
     try {
       const lookup = await apiClient.get<{ parents: { userId: string }[] }>(
-        `/api/v1/centres/${centreId}/eligible-parents`,
+        `/centres/${centreId}/eligible-parents`,
         { params: { query: values.parentEmail } },
       );
       const parent = lookup.data.parents[0];
@@ -139,17 +137,13 @@ export function ChildRecordPage() {
         setRequestError("No eligible Parent account matched that email.");
         return;
       }
-      await mutateWithCsrf(
-        "post",
-        `/api/v1/centres/${centreId}/children/${childId}/relationships`,
-        {
-          parentUserId: parent.userId,
-          relationshipType: values.relationshipType,
-          isLegalGuardian: values.isLegalGuardian,
-          mayAuthorizePickup: values.mayAuthorizePickup,
-          mayViewIncidents: values.mayViewIncidents,
-        },
-      );
+      await mutateWithCsrf("post", `/centres/${centreId}/children/${childId}/relationships`, {
+        parentUserId: parent.userId,
+        relationshipType: values.relationshipType,
+        isLegalGuardian: values.isLegalGuardian,
+        mayAuthorizePickup: values.mayAuthorizePickup,
+        mayViewIncidents: values.mayViewIncidents,
+      });
       relationshipForm.reset({
         parentEmail: "",
         relationshipType: "LEGAL_GUARDIAN",
@@ -166,7 +160,7 @@ export function ChildRecordPage() {
   const setRoom = enrolmentForm.handleSubmit(async ({ roomId }) => {
     if (enrolment === null) return;
     try {
-      await mutateWithCsrf("put", `/api/v1/centres/${centreId}/children/${childId}/enrolment`, {
+      await mutateWithCsrf("put", `/centres/${centreId}/children/${childId}/enrolment`, {
         roomId,
         version: enrolment.version,
       });
@@ -179,7 +173,7 @@ export function ChildRecordPage() {
   async function archiveChild() {
     if (child === null) return;
     try {
-      await mutateWithCsrf("post", `/api/v1/centres/${centreId}/children/${childId}/archive`, {
+      await mutateWithCsrf("post", `/centres/${centreId}/children/${childId}/archive`, {
         version: child.version,
       });
       await navigate(`/care/centres/${centreId}/children`, { replace: true });
@@ -194,7 +188,7 @@ export function ChildRecordPage() {
     try {
       await mutateWithCsrf(
         "delete",
-        `/api/v1/centres/${centreId}/children/${childId}/relationships/${revoking.id}`,
+        `/centres/${centreId}/children/${childId}/relationships/${revoking.id}`,
         { version: revoking.version },
       );
       setRevoking(null);

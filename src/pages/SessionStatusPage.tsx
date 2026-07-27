@@ -19,7 +19,7 @@ export function SessionStatusPage() {
   useEffect(() => {
     let current = true;
     void apiClient
-      .get<SessionSummary>("/api/v1/auth/session")
+      .get<SessionSummary>("/auth/session")
       .then(({ data }) => {
         if (current) setSession(data);
       })
@@ -35,7 +35,7 @@ export function SessionStatusPage() {
     setIsLoggingOut(true);
     setRequestError(null);
     try {
-      await postWithCsrf("/api/v1/auth/logout");
+      await postWithCsrf("/auth/logout");
       void navigate("/login", { replace: true });
     } catch (error) {
       setRequestError(safeApiMessage(error));
@@ -82,6 +82,9 @@ export function SessionStatusPage() {
                 Manage MFA
               </Link>
             )}
+            <Link className="secondary-button link-button" to="/change-password">
+              Change password
+            </Link>
             <button
               className="secondary-button"
               disabled={isLoggingOut}

@@ -1,13 +1,14 @@
-import { readFileSync } from "node:fs";
+// @vitest-environment jsdom
 
-import { renderToStaticMarkup } from "react-dom/server";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { describe, expect, test } from "vitest";
 
 import { ConfirmDialog } from "./ConfirmDialog";
 
 describe("ConfirmDialog", () => {
   test("announces a modal confirmation with cancellable controls", () => {
-    const html = renderToStaticMarkup(
+    render(
       <ConfirmDialog
         confirmLabel="Archive child"
         description="This keeps historical records."
@@ -17,18 +18,46 @@ describe("ConfirmDialog", () => {
         title="Archive this child?"
       />,
     );
-    expect(html).toContain('role="alertdialog"');
-    expect(html).toContain('aria-modal="true"');
-    expect(html).toContain('aria-labelledby="confirmation-title"');
-    expect(html).toContain('aria-describedby="confirmation-description"');
-    expect(html).toContain(">Cancel<");
-    expect(html).toContain(">Archive child<");
+    const dialog = screen.getByRole("alertdialog", { name: "Archive this child?" });
+    expect(dialog).toHaveAttribute("aria-modal", "true");
+    expect(dialog).toHaveAccessibleDescription("This keeps historical records.");
+    expect(screen.getByRole("button", { name: "Cancel" })).toBeVisible();
+    expect(screen.getByRole("button", { name: "Archive child" })).toBeVisible();
   });
 
-  test("implements Escape and focus restoration for keyboard users", () => {
-    const source = readFileSync(new URL("./ConfirmDialog.tsx", import.meta.url), "utf8");
-    expect(source).toContain('event.key === "Escape"');
-    expect(source).toContain("previousFocusRef.current?.focus()");
-    expect(source).toContain("cancelRef.current?.focus()");
+  test("implements Escape and focus restoration for keyboard users", async () => {
+    const user = userEvent.setup();
+    const trigger = document.createElement("button");
+    trigger.textContent = "Open";
+    document.body.append(trigger);
+    trigger.focus();
+    let open = true;
+    const { rerender } = render(
+      <ConfirmDialog
+        confirmLabel="Archive"
+        description="Confirmation"
+        onCancel={() => {
+          open = false;
+        }}
+        onConfirm={() => undefined}
+        open={open}
+        title="Archive?"
+      />,
+    );
+
+    expect(screen.getByRole("button", { name: "Cancel" })).toHaveFocus();
+    await user.keyboard("{Escape}");
+    rerender(
+      <ConfirmDialog
+        confirmLabel="Archive"
+        description="Confirmation"
+        onCancel={() => undefined}
+        onConfirm={() => undefined}
+        open={open}
+        title="Archive?"
+      />,
+    );
+    expect(trigger).toHaveFocus();
+    trigger.remove();
   });
 });

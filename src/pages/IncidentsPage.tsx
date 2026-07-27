@@ -16,7 +16,7 @@ export function IncidentsPage() {
     if (access.status !== "ready") return;
     let current = true;
     void apiClient
-      .get<{ centres: Centre[] }>("/api/v1/centres")
+      .get<{ centres: Centre[] }>("/centres")
       .then(({ data }) => {
         if (current) {
           setCentres(

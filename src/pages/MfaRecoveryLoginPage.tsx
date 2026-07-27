@@ -26,7 +26,7 @@ export function MfaRecoveryLoginPage() {
   const submit = handleSubmit(async ({ recoveryCode }) => {
     setRequestError(null);
     try {
-      await postWithCsrf("/api/v1/auth/mfa/recovery/verify", {
+      await postWithCsrf("/auth/mfa/recovery/verify", {
         challengeToken,
         recoveryCode,
       });

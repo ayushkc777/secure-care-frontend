@@ -25,7 +25,7 @@ export function LoginPage() {
   const submit = handleSubmit(async (values) => {
     setRequestError(null);
     try {
-      const result = await postWithCsrf<LoginResponse>("/api/v1/auth/login", values);
+      const result = await postWithCsrf<LoginResponse>("/auth/login", values);
       clearRecoveryCodes();
       clearSetup();
       if (result.authenticationState === "MFA_REQUIRED") {
@@ -64,6 +64,11 @@ export function LoginPage() {
       </form>
       <p className="supporting-link">
         Need an account? <Link to="/register">Register</Link>
+      </p>
+      <p className="supporting-link">
+        <Link to="/forgot-password">Forgot password?</Link>
+        {" · "}
+        <Link to="/resend-verification">Resend verification</Link>
       </p>
     </AuthCard>
   );

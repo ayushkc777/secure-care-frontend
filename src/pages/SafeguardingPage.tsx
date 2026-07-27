@@ -40,13 +40,13 @@ export function SafeguardingPage() {
   const load = useCallback(async () => {
     if (concernId === undefined) {
       const response = await apiClient.get<{ concerns: Concern[] }>(
-        `/api/v1/centres/${centreId}/safeguarding-concerns`,
+        `/centres/${centreId}/safeguarding-concerns`,
       );
       setConcerns(response.data.concerns);
       return;
     }
     const response = await apiClient.get<{ concern: Concern }>(
-      `/api/v1/centres/${centreId}/safeguarding-concerns/${concernId}`,
+      `/centres/${centreId}/safeguarding-concerns/${concernId}`,
     );
     setConcern(response.data.concern);
   }, [centreId, concernId]);
@@ -69,7 +69,7 @@ export function SafeguardingPage() {
     try {
       await mutateWithCsrf(
         "post",
-        `/api/v1/centres/${centreId}/safeguarding-concerns/${concern.id}/${action}`,
+        `/centres/${centreId}/safeguarding-concerns/${concern.id}/${action}`,
         {
           version: concern.version,
           ...(action === "review" ? { note: null } : { reason }),

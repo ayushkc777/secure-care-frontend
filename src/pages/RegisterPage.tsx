@@ -24,7 +24,7 @@ export function RegisterPage() {
   const submit = handleSubmit(async ({ confirmPassword: _confirmation, ...values }) => {
     setRequestError(null);
     try {
-      await postWithCsrf("/api/v1/auth/register", values);
+      await postWithCsrf("/auth/register", values);
       setCompleted(true);
     } catch (error) {
       setRequestError(safeApiMessage(error));

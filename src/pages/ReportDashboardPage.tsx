@@ -73,7 +73,7 @@ export function ReportDashboardPage() {
     setError(null);
     try {
       const { data } = await apiClient.get<ReportResponse>(
-        `/api/v1/centres/${centreId}/reports/${selectedReportType}?${queryFrom(values, page).toString()}`,
+        `/centres/${centreId}/reports/${selectedReportType}?${queryFrom(values, page).toString()}`,
       );
       setReport(data);
       setActiveFilters(values);
@@ -90,7 +90,7 @@ export function ReportDashboardPage() {
     setError(null);
     try {
       const response = await apiClient.get<Blob>(
-        `/api/v1/centres/${centreId}/reports/${selectedReportType}/export.csv?${queryFrom(activeFilters, report?.pagination.page ?? 1).toString()}`,
+        `/centres/${centreId}/reports/${selectedReportType}/export.csv?${queryFrom(activeFilters, report?.pagination.page ?? 1).toString()}`,
         { responseType: "blob" },
       );
       const url = URL.createObjectURL(response.data);

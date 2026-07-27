@@ -26,6 +26,8 @@ export type LoginResponse =
       session: { id: string; absoluteExpiresAt: string; idleExpiresAt: string };
     };
 
+export type PasswordAuthenticationResponse = LoginResponse & { message: string };
+
 export type MfaSetup = {
   manualSecret: string;
   otpauthUri: string;

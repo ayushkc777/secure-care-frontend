@@ -25,6 +25,7 @@ const CentreWorkspacePage = page(
   () => import("../pages/CentreWorkspacePage"),
   "CentreWorkspacePage",
 );
+const ChangePasswordPage = page(() => import("../pages/ChangePasswordPage"), "ChangePasswordPage");
 const ChildAccessPage = page(() => import("../pages/ChildAccessPage"), "ChildAccessPage");
 const ChildRecordPage = page(() => import("../pages/ChildRecordPage"), "ChildRecordPage");
 const CommunicationsPage = page(() => import("../pages/CommunicationsPage"), "CommunicationsPage");
@@ -41,6 +42,7 @@ const HealthWorkspacePage = page(
   () => import("../pages/HealthWorkspacePage"),
   "HealthWorkspacePage",
 );
+const ForgotPasswordPage = page(() => import("../pages/ForgotPasswordPage"), "ForgotPasswordPage");
 const IncidentDetailPage = page(() => import("../pages/IncidentDetailPage"), "IncidentDetailPage");
 const IncidentsPage = page(() => import("../pages/IncidentsPage"), "IncidentsPage");
 const IncidentWorkspacePage = page(
@@ -70,6 +72,11 @@ const PickupWorkspacePage = page(
 );
 const RecoveryCodesPage = page(() => import("../pages/RecoveryCodesPage"), "RecoveryCodesPage");
 const RegisterPage = page(() => import("../pages/RegisterPage"), "RegisterPage");
+const ResendVerificationPage = page(
+  () => import("../pages/ResendVerificationPage"),
+  "ResendVerificationPage",
+);
+const ResetPasswordPage = page(() => import("../pages/ResetPasswordPage"), "ResetPasswordPage");
 const ReportDashboardPage = page(
   () => import("../pages/ReportDashboardPage"),
   "ReportDashboardPage",
@@ -96,6 +103,7 @@ const SecurityRecordsPage = page(
 );
 const SessionStatusPage = page(() => import("../pages/SessionStatusPage"), "SessionStatusPage");
 const StepUpPage = page(() => import("../pages/StepUpPage"), "StepUpPage");
+const VerifyEmailPage = page(() => import("../pages/VerifyEmailPage"), "VerifyEmailPage");
 
 export const router = createBrowserRouter([
   {
@@ -106,6 +114,18 @@ export const router = createBrowserRouter([
       { index: true, element: <LandingPage /> },
       { path: "login", element: <LoginPage /> },
       { path: "register", element: <RegisterPage /> },
+      { path: "forgot-password", element: <ForgotPasswordPage /> },
+      { path: "reset-password", element: <ResetPasswordPage /> },
+      { path: "verify-email", element: <VerifyEmailPage /> },
+      { path: "resend-verification", element: <ResendVerificationPage /> },
+      {
+        path: "change-password",
+        element: (
+          <ProtectedRoute>
+            <ChangePasswordPage />
+          </ProtectedRoute>
+        ),
+      },
       { path: "mfa/verify", element: <MfaVerifyPage /> },
       { path: "mfa/recovery", element: <MfaRecoveryLoginPage /> },
       { path: "mfa/required", element: <MfaRequiredPage /> },

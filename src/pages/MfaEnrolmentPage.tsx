@@ -50,7 +50,7 @@ export function MfaEnrolmentPage() {
     setQrDataUrl(null);
     setIsStarting(true);
     try {
-      setSetup(await postWithCsrf<MfaSetup>("/api/v1/auth/mfa/setup/start"));
+      setSetup(await postWithCsrf<MfaSetup>("/auth/mfa/setup/start"));
     } catch (error) {
       setRequestError(safeApiMessage(error));
     } finally {
@@ -61,7 +61,7 @@ export function MfaEnrolmentPage() {
   const confirm = handleSubmit(async ({ code }) => {
     setRequestError(null);
     try {
-      const result = await postWithCsrf<ConfirmationResponse>("/api/v1/auth/mfa/setup/confirm", {
+      const result = await postWithCsrf<ConfirmationResponse>("/auth/mfa/setup/confirm", {
         code,
       });
       setRecoveryCodes(result.recoveryCodes);

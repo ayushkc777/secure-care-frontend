@@ -1,7 +1,7 @@
 {
   "name": "securecare-frontend",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "engines": {
     "node": ">=24.0.0",
@@ -10,12 +10,18 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "check:api-paths": "node scripts/check-api-paths.mjs",
     "preview": "vite preview",
     "typecheck": "tsc -b --pretty false",
     "lint": "eslint . --max-warnings=0",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:a11y": "vitest run src/pages/account-recovery.test.tsx src/components/feedback/ConfirmDialog.test.tsx",
+    "test:e2e": "playwright test",
+    "test:e2e:install": "playwright install chromium",
+    "verify:build": "npm run build && npm run check:api-paths",
     "prepare": "husky"
   },
   "dependencies": {
@@ -31,17 +37,25 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@htmlacademy/eslint-plugin-jsx-a11y": "^6.11.0",
+    "@playwright/test": "^1.62.0",
     "@tailwindcss/vite": "^4.3.3",
+    "@testing-library/jest-dom": "^7.0.0",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
     "@types/node": "^26.1.1",
     "@types/qrcode": "1.5.6",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.4",
+    "@vitest/coverage-v8": "^4.1.10",
+    "axe-core": "^4.12.1",
     "eslint": "^10.8.0",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.3",
     "globals": "^17.4.0",
     "husky": "^9.1.7",
+    "jsdom": "^29.1.1",
     "lint-staged": "^17.2.0",
     "prettier": "^3.9.6",
     "prettier-plugin-tailwindcss": "^0.8.1",
@@ -49,7 +63,8 @@
     "typescript": "6.0.3",
     "typescript-eslint": "^8.65.0",
     "vite": "^8.1.5",
-    "vitest": "4.1.10"
+    "vitest": "4.1.10",
+    "vitest-axe": "^0.1.0"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
@@ -57,5 +72,12 @@
       "prettier --write"
     ],
     "*.{css,json,md,yaml,yml}": "prettier --write"
+  },
+  "overrides": {
+    "@htmlacademy/eslint-plugin-jsx-a11y": {
+      "minimatch": {
+        "brace-expansion": "5.0.8"
+      }
+    }
   }
 }

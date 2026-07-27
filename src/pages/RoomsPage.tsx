@@ -31,14 +31,14 @@ export function RoomsPage() {
   });
 
   const load = useCallback(async () => {
-    const { data } = await apiClient.get<{ rooms: Room[] }>(`/api/v1/centres/${centreId}/rooms`);
+    const { data } = await apiClient.get<{ rooms: Room[] }>(`/centres/${centreId}/rooms`);
     setRooms(data.rooms);
   }, [centreId]);
 
   useEffect(() => {
     let current = true;
     void apiClient
-      .get<{ rooms: Room[] }>(`/api/v1/centres/${centreId}/rooms`)
+      .get<{ rooms: Room[] }>(`/centres/${centreId}/rooms`)
       .then(({ data }) => {
         if (current) setRooms(data.rooms);
       })
@@ -54,9 +54,9 @@ export function RoomsPage() {
     setRequestError(null);
     try {
       if (editing === null) {
-        await mutateWithCsrf("post", `/api/v1/centres/${centreId}/rooms`, values);
+        await mutateWithCsrf("post", `/centres/${centreId}/rooms`, values);
       } else {
-        await mutateWithCsrf("patch", `/api/v1/centres/${centreId}/rooms/${editing.id}`, {
+        await mutateWithCsrf("patch", `/centres/${centreId}/rooms/${editing.id}`, {
           ...values,
           version: editing.version,
         });
@@ -77,7 +77,7 @@ export function RoomsPage() {
   async function archive() {
     if (archiving === null) return;
     try {
-      await mutateWithCsrf("post", `/api/v1/centres/${centreId}/rooms/${archiving.id}/archive`, {
+      await mutateWithCsrf("post", `/centres/${centreId}/rooms/${archiving.id}/archive`, {
         version: archiving.version,
       });
       setArchiving(null);
@@ -96,7 +96,12 @@ export function RoomsPage() {
       {rooms.length === 0 ? (
         <p>No active rooms have been created.</p>
       ) : (
-        <div className="responsive-table" tabIndex={0}>
+        <div
+          aria-label="Scrollable room capacity"
+          className="responsive-table"
+          role="region"
+          tabIndex={0}
+        >
           <table>
             <caption>Active room capacity</caption>
             <thead>

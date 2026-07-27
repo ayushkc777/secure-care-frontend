@@ -41,14 +41,14 @@ export function AttendanceWorkspacePage() {
 
   const load = useCallback(async () => {
     const attendance = await apiClient.get<{ attendance: AttendanceRecord[] }>(
-      `/api/v1/centres/${centreId}/attendance`,
+      `/centres/${centreId}/attendance`,
       { params: { date } },
     );
     setRecords(attendance.data.attendance);
     if (controls.canManage) {
       const [childResponse, roomResponse] = await Promise.all([
-        apiClient.get<{ children: ChildSummary[] }>(`/api/v1/centres/${centreId}/children`),
-        apiClient.get<{ rooms: Room[] }>(`/api/v1/centres/${centreId}/rooms`),
+        apiClient.get<{ children: ChildSummary[] }>(`/centres/${centreId}/children`),
+        apiClient.get<{ rooms: Room[] }>(`/centres/${centreId}/rooms`),
       ]);
       setChildren(childResponse.data.children);
       setRooms(roomResponse.data.rooms);
@@ -73,7 +73,7 @@ export function AttendanceWorkspacePage() {
   async function action(record: AttendanceRecord, name: string, body: Record<string, unknown>) {
     setError(null);
     try {
-      await mutateWithCsrf("post", `/api/v1/centres/${centreId}/attendance/${record.id}/${name}`, {
+      await mutateWithCsrf("post", `/centres/${centreId}/attendance/${record.id}/${name}`, {
         version: record.version,
         ...body,
       });
@@ -87,7 +87,7 @@ export function AttendanceWorkspacePage() {
   async function createExpected() {
     if (childId.length === 0) return;
     try {
-      await mutateWithCsrf("post", `/api/v1/centres/${centreId}/attendance`, {
+      await mutateWithCsrf("post", `/centres/${centreId}/attendance`, {
         childId,
         attendanceDate: date,
       });
@@ -106,23 +106,19 @@ export function AttendanceWorkspacePage() {
     }
     try {
       const detail = await apiClient.get<{ attendance: AttendanceRecord }>(
-        `/api/v1/centres/${centreId}/attendance/${record.id}`,
+        `/centres/${centreId}/attendance/${record.id}`,
       );
       const target = detail.data.attendance.events?.[0];
       if (!target) {
         setError("This record has no lifecycle event to correct.");
         return;
       }
-      await mutateWithCsrf(
-        "post",
-        `/api/v1/centres/${centreId}/attendance/${record.id}/corrections`,
-        {
-          version: record.version,
-          correctionOfEventId: target.id,
-          correctedStatus,
-          reason: correctionReason,
-        },
-      );
+      await mutateWithCsrf("post", `/centres/${centreId}/attendance/${record.id}/corrections`, {
+        version: record.version,
+        correctionOfEventId: target.id,
+        correctedStatus,
+        reason: correctionReason,
+      });
       setCorrectionReason("");
       setMessage("Attendance correction appended to history.");
       await load();

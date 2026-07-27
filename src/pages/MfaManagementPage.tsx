@@ -22,7 +22,7 @@ export function MfaManagementPage() {
     setBusyAction("regenerate");
     setRequestError(null);
     try {
-      const result = await postWithCsrf<RegenerateResponse>("/api/v1/auth/mfa/recovery/regenerate");
+      const result = await postWithCsrf<RegenerateResponse>("/auth/mfa/recovery/regenerate");
       setRecoveryCodes(result.recoveryCodes);
       void navigate("/mfa/recovery-codes");
     } catch (error) {
@@ -36,7 +36,7 @@ export function MfaManagementPage() {
     setBusyAction("disable");
     setRequestError(null);
     try {
-      await postWithCsrf("/api/v1/auth/mfa/disable");
+      await postWithCsrf("/auth/mfa/disable");
       await refresh();
       void navigate("/mfa/required", { replace: true });
     } catch (error) {

@@ -40,7 +40,7 @@ export function ConversationPage() {
 
   const load = useCallback(async () => {
     const { data } = await apiClient.get<{ conversation: Conversation }>(
-      `/api/v1/centres/${centreId}/conversations/${conversationId}`,
+      `/centres/${centreId}/conversations/${conversationId}`,
     );
     setConversation(data.conversation);
   }, [centreId, conversationId]);
@@ -60,7 +60,7 @@ export function ConversationPage() {
     try {
       await mutateWithCsrf(
         "post",
-        `/api/v1/centres/${centreId}/conversations/${conversationId}/messages`,
+        `/centres/${centreId}/conversations/${conversationId}/messages`,
         { ...values, clientRequestId: crypto.randomUUID() },
       );
       replyForm.reset();
@@ -74,7 +74,7 @@ export function ConversationPage() {
   const markRead = async (messageId: string) => {
     await mutateWithCsrf(
       "post",
-      `/api/v1/centres/${centreId}/conversations/${conversationId}/messages/${messageId}/read`,
+      `/centres/${centreId}/conversations/${conversationId}/messages/${messageId}/read`,
       {},
     );
     setStatus("Read receipt recorded.");
@@ -86,7 +86,7 @@ export function ConversationPage() {
     try {
       await mutateWithCsrf(
         "post",
-        `/api/v1/centres/${centreId}/conversations/${conversationId}/messages/${correcting.id}/amendments`,
+        `/centres/${centreId}/conversations/${conversationId}/messages/${correcting.id}/amendments`,
         values,
       );
       setCorrecting(null);
@@ -101,11 +101,9 @@ export function ConversationPage() {
   const archive = async () => {
     if (conversation === null) return;
     try {
-      await mutateWithCsrf(
-        "post",
-        `/api/v1/centres/${centreId}/conversations/${conversationId}/archive`,
-        { version: conversation.version },
-      );
+      await mutateWithCsrf("post", `/centres/${centreId}/conversations/${conversationId}/archive`, {
+        version: conversation.version,
+      });
       setStatus("Conversation archived.");
       await load();
     } catch (reason) {

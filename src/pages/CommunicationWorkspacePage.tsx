@@ -60,8 +60,8 @@ export function CommunicationWorkspacePage() {
 
   const load = useCallback(async () => {
     const [conversationResponse, announcementResponse] = await Promise.all([
-      apiClient.get<{ conversations: Conversation[] }>(`/api/v1/centres/${centreId}/conversations`),
-      apiClient.get<{ announcements: Announcement[] }>(`/api/v1/centres/${centreId}/announcements`),
+      apiClient.get<{ conversations: Conversation[] }>(`/centres/${centreId}/conversations`),
+      apiClient.get<{ announcements: Announcement[] }>(`/centres/${centreId}/announcements`),
     ]);
     setConversations(conversationResponse.data.conversations);
     setAnnouncements(announcementResponse.data.announcements);
@@ -80,7 +80,7 @@ export function CommunicationWorkspacePage() {
   const createConversation = conversationForm.handleSubmit(async (values) => {
     setError(null);
     try {
-      await mutateWithCsrf("post", `/api/v1/centres/${centreId}/conversations`, {
+      await mutateWithCsrf("post", `/centres/${centreId}/conversations`, {
         scope: "CHILD",
         childId: values.childId,
         participantUserIds: values.participantUserIds,
@@ -100,7 +100,7 @@ export function CommunicationWorkspacePage() {
   const createAnnouncement = announcementForm.handleSubmit(async (values) => {
     setError(null);
     try {
-      await mutateWithCsrf("post", `/api/v1/centres/${centreId}/announcements`, {
+      await mutateWithCsrf("post", `/centres/${centreId}/announcements`, {
         scope: values.scope,
         ...(values.scope === "ROOM" ? { roomId: values.scopeId } : {}),
         ...(values.scope === "CHILD" ? { childId: values.scopeId } : {}),
@@ -125,7 +125,7 @@ export function CommunicationWorkspacePage() {
     try {
       await mutateWithCsrf(
         "post",
-        `/api/v1/centres/${centreId}/announcements/${announcement.id}/${action}`,
+        `/centres/${centreId}/announcements/${announcement.id}/${action}`,
         action === "acknowledge" ? {} : { version: announcement.version },
       );
       setStatus(`Announcement ${action} action completed.`);

@@ -70,10 +70,10 @@ export function IncidentWorkspacePage() {
 
   const load = useCallback(async () => {
     const incidentRequest = apiClient.get<{ incidents: Incident[]; pagination: Pagination }>(
-      `/api/v1/centres/${centreId}/incidents`,
+      `/centres/${centreId}/incidents`,
     );
     const childRequest = controls.canCreate
-      ? apiClient.get<{ children: ChildSummary[] }>(`/api/v1/centres/${centreId}/children`)
+      ? apiClient.get<{ children: ChildSummary[] }>(`/centres/${centreId}/children`)
       : Promise.resolve({ data: { children: [] as ChildSummary[] } });
     const [incidentResponse, childResponse] = await Promise.all([incidentRequest, childRequest]);
     setIncidents(incidentResponse.data.incidents);
@@ -95,7 +95,7 @@ export function IncidentWorkspacePage() {
   const create = handleSubmit(async (values) => {
     setRequestError(null);
     try {
-      await mutateWithCsrf("post", `/api/v1/centres/${centreId}/incidents`, {
+      await mutateWithCsrf("post", `/centres/${centreId}/incidents`, {
         childId: values.childId,
         category: values.category,
         severity: values.severity,

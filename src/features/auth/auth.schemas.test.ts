@@ -1,6 +1,12 @@
 import { describe, expect, test } from "vitest";
 
-import { registerFormSchema } from "./auth.schemas";
+import {
+  authTokenSchema,
+  changePasswordFormSchema,
+  emailFormSchema,
+  registerFormSchema,
+  resetPasswordFormSchema,
+} from "./auth.schemas";
 
 describe("registration schema", () => {
   test("accepts the required password policy without retaining confirmation", () => {
@@ -20,6 +26,39 @@ describe("registration schema", () => {
         password: "weak",
         confirmPassword: "different",
         role: "ADMINISTRATOR",
+      }).success,
+    ).toBe(false);
+  });
+});
+
+describe("account recovery schemas", () => {
+  test("validates email and opaque link tokens", () => {
+    expect(emailFormSchema.safeParse({ email: "parent@example.com" }).success).toBe(true);
+    expect(authTokenSchema.safeParse("a".repeat(32)).success).toBe(true);
+    expect(authTokenSchema.safeParse("short").success).toBe(false);
+  });
+
+  test("requires strong matching reset passwords", () => {
+    expect(
+      resetPasswordFormSchema.safeParse({
+        newPassword: "Meadow!Quartz7-River-Care",
+        confirmPassword: "Meadow!Quartz7-River-Care",
+      }).success,
+    ).toBe(true);
+    expect(
+      resetPasswordFormSchema.safeParse({
+        newPassword: "Meadow!Quartz7-River-Care",
+        confirmPassword: "different",
+      }).success,
+    ).toBe(false);
+  });
+
+  test("requires the current password for an authenticated change", () => {
+    expect(
+      changePasswordFormSchema.safeParse({
+        currentPassword: "",
+        newPassword: "Meadow!Quartz7-River-Care",
+        confirmPassword: "Meadow!Quartz7-River-Care",
       }).success,
     ).toBe(false);
   });

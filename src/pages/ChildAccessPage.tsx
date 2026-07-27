@@ -38,7 +38,7 @@ export function ChildAccessPage() {
     setResult(null);
     try {
       const { data } = await apiClient.get<AccessResult>(
-        `/api/v1/centres/${values.centreId}/children/${values.childId}/access`,
+        `/centres/${values.centreId}/children/${values.childId}/access`,
         { params: { action: values.action } },
       );
       setResult(data);

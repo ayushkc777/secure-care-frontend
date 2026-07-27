@@ -18,7 +18,7 @@ export function PickupPage() {
     if (access.status !== "ready") return;
     let current = true;
     void apiClient
-      .get<{ centres: Centre[] }>("/api/v1/centres")
+      .get<{ centres: Centre[] }>("/centres")
       .then(async ({ data }) => {
         const visible = data.centres.filter(
           (centre) =>
@@ -29,7 +29,7 @@ export function PickupPage() {
         return Promise.all(
           visible.map(async (centre) => {
             const response = await apiClient.get<{ children: ChildSummary[] }>(
-              `/api/v1/centres/${centre.id}/children`,
+              `/centres/${centre.id}/children`,
             );
             return { ...centre, children: response.data.children };
           }),
